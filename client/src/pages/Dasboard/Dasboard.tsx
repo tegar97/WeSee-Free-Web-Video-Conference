@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
+import { useAuth } from '../../context/AuthContext';
 
-const Dasboard : React.FC  = () =>  {
-    return (
-        <div>
-            Dasboard
-        </div>
-    )
-}
+const Dasboard: React.FC = () => {
+    const { currentUser }: any = useAuth();
+    console.log(currentUser);
 
-export default Dasboard
+    return <div>{currentUser.email}</div>;
+};
+
+export default Dasboard;
