@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RoomNavbarContainer, RoomNavbarItems } from './Room-navbar.styles';
 
-function RoomNavbar() {
+function RoomNavbar({ stream }) {
+    const [videoMuted, setVideoMuted] = useState(false);
+
+    function toggleMuteVideo() {
+        if (stream) {
+            setVideoMuted(!videoMuted);
+            stream.getVideoTracks()[0].enabled = videoMuted;
+        }
+    }
     return (
         <RoomNavbarContainer>
             <div>
@@ -13,7 +21,7 @@ function RoomNavbar() {
                 <RoomNavbarItems>
                     <i data-tip="Turn off mic" className="text-xl text-white fas fa-microphone"></i>
                 </RoomNavbarItems>
-                <RoomNavbarItems>
+                <RoomNavbarItems onClick={toggleMuteVideo}>
                     <i data-tip="Turn off camera" className="text-xl text-white fas fa-video"></i>
                 </RoomNavbarItems>
                 <div className="flex items-center" style={{ gridColumn: '3/5', width: '100%' }}>

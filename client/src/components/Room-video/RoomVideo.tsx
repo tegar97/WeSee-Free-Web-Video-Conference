@@ -1,9 +1,9 @@
 import VideoGrid from '../videoGrid/videoGrid';
 import { RoomVideoContainer } from './RoomVideo.styles';
-const RoomVideo = () => {
+const RoomVideo = ({ userVideo, peers }) => {
     return (
         <RoomVideoContainer>
-            <VideoGrid />
+            <VideoGrid userVideo={userVideo} peers={peers} />
         </RoomVideoContainer>
     );
 };

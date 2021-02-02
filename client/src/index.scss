@@ -19,7 +19,7 @@ body {
   .video-container {
     width: var(--width);
     height: var(--height);
-    background-color: #3a3a3e;
+    position: relative;
   }
   
   video {

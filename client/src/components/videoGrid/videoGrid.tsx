@@ -1,7 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import debounce from 'lodash/debounce';
+import { useAuth } from '../../context/AuthContext';
 
-const VideoGrid = () => {
+const Video = (props) => {
+    const ref = useRef(null);
+
+    console.log(props.peer);
+    useEffect(() => {
+        props.peer.on('stream', (stream) => {
+            ref.current.srcObject = stream;
+        });
+    }, [props.peer]);
+
+    return <video style={{ width: '100%', objectFit: 'cover' }} playsInline autoPlay ref={ref} />;
+};
+
+const VideoGrid = ({ userVideo, peers }) => {
+    const { currentUser }: any = useAuth();
     useEffect(() => {
         function recalculateLayout() {
             const gallery = document.getElementById('gallery');
@@ -63,15 +78,41 @@ const VideoGrid = () => {
         const debouncedRecalculateLayout = debounce(recalculateLayout, 50);
         window.addEventListener('resize', debouncedRecalculateLayout);
         debouncedRecalculateLayout();
-    }, []);
+    }, [peers]);
     return (
         <div id="gallery">
             <div className="video-container">
-                <video autoPlay loop muted src="https://dosant.github.io/video.mp4"></video>
+                <video style={{ width: '100%', objectFit: 'cover' }} muted ref={userVideo} autoPlay playsInline></video>
+                <div
+                    style={{
+                        position: 'absolute',
+                        background: 'rgba(0,0,0,.8)',
+                        bottom: '0',
+                        left: '2px',
+                        color: '#fff',
+                    }}
+                >
+                    {currentUser.displayName}
+                </div>
             </div>
-            <div className="video-container">
-                <video autoPlay loop muted src="https://dosant.github.io/video.mp4"></video>
-            </div>
+            {peers.map((peer, index) => {
+                return (
+                    <div className="video-container">
+                        <Video key={index} peer={peer} />
+                        <div
+                            style={{
+                                position: 'absolute',
+                                background: 'rgba(0,0,0,.8)',
+                                bottom: '0',
+                                left: '2px',
+                                color: '#fff',
+                            }}
+                        >
+                            {currentUser.displayName}
+                        </div>
+                    </div>
+                );
+            })}
         </div>
     );
 };

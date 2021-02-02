@@ -17,8 +17,8 @@ const usersId = {};
 const socketToRoom = {};
 io.on('connection',(socket) =>{
     console.log('We have a new connection')
-    socket.on('join',({name,room},callback) => {
-        const {error,user} = addUser({id : socket.id,name,room})
+    socket.on('join',(room,callback) => {
+        console.log(room)
         if (usersId[room]) {
             const length = usersId[room].length;
             if (length === 4) {
@@ -35,7 +35,6 @@ io.on('connection',(socket) =>{
         const usersInThisRoom = usersId[room].filter(id => id !== socket.id);
 
         socket.emit("all users", usersInThisRoom);
-        io.to(user.room).emit('roomData',{room: user.room,users: getUsersinRoom(user.room)})
         callback()
     });
 
