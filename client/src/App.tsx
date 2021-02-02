@@ -13,10 +13,10 @@ const App: React.FC = () => {
             <Router>
                 <Switch>
                     <Route exact path="/" component={LandingPage} />
-                    <Route path="/dasboard" component={Dasboard} />
-                    <Route path="/login" component={Login} />
-                    <Route path="/signup" component={Register} />
-                    <Route path="/room" component={Room} />
+                    <Route exact path="/dasboard" component={Dasboard} />
+                    <Route exact path="/login" component={Login} />
+                    <Route exact path="/signup" component={Register} />
+                    <Route exact path="/room" component={Room} />
                 </Switch>
             </Router>
         </AuthProvider>

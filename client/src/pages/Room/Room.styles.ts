@@ -3,10 +3,11 @@ import styled from 'styled-components'
 
 export const RoomContainer = styled.div`
     background-color  : #191B28;
-    height: 100vh;
     display: flex;
+    height: 100vh;
+   
     width: 100%;    
-    position: relative;
+
 
 `
 

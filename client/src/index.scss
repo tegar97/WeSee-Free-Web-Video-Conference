@@ -1,0 +1,29 @@
+/* ./src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+    margin: 0;
+
+    height: 100vh;
+  
+    background-color: #1c1c1e;
+  }
+  
+  #gallery {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: calc(var(--width) * var(--cols));
+  }
+  
+  .video-container {
+    width: var(--width);
+    height: var(--height);
+    background-color: #3a3a3e;
+  }
+  
+  video {
+    height: 100%;
+    width: 100%;
+  }
