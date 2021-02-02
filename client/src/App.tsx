@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
 import { AuthProvider } from './context/AuthContext';
 import Dasboard from './pages/Dasboard/Dasboard';
 import LandingPage from './pages/Landing-Page/LandingPage';
@@ -11,6 +12,8 @@ const App: React.FC = () => {
     return (
         <AuthProvider>
             <Router>
+                <ReactTooltip />
+
                 <Switch>
                     <Route exact path="/" component={LandingPage} />
                     <Route exact path="/dasboard" component={Dasboard} />
