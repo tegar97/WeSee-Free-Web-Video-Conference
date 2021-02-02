@@ -1,0 +1,27 @@
+{
+  "name": "Wesee",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tegar97/WeSee-Free-Web-Video-Conference.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "socket.io": "^3.1.0"
+  },
+  "bugs": {
+    "url": "https://github.com/tegar97/WeSee-Free-Web-Video-Conference/issues"
+  },
+  "homepage": "https://github.com/tegar97/WeSee-Free-Web-Video-Conference#readme"
+}

@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import RoomNavbar from '../../components/Room-navbar/Room-navbar';
 import RoomVideo from '../../components/Room-video/RoomVideo';
 import { RoomContainer, RoomChatAndUsers, RoomChatAndUsersItems, ItemExtends } from './Room.styles';
+import { io } from 'socket.io-client';
+const ENDPOINT = 'http://localhost:5000/';
 
 const Room: React.FC = () => {
+    useEffect(() => {
+        let socket = io(ENDPOINT);
+        console.log(socket);
+    }, [ENDPOINT]);
     return (
         <RoomContainer>
             <RoomChatAndUsers>
