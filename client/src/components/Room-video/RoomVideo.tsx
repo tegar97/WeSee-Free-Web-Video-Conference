@@ -9,7 +9,7 @@ const RoomVideo = ({ userVideo, peers, stream, chatBar }) => {
     return (
         <RoomVideoContainer style={{ width: chatBar ? '70%' : '100%' }}>
             <RoomMenu>
-                <p className="handle">te</p>
+                <ChatBar />
             </RoomMenu>
             <VideoGrid userVideo={userVideo} peers={peers} chatBar={chatBar} />
         </RoomVideoContainer>

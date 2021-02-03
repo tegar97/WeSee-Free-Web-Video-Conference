@@ -3,7 +3,7 @@ import { ChatBarContainer } from './ChatBar.styles';
 const ChatBar = () => {
     return (
         <ChatBarContainer>
-            <h1>ads</h1>
+            <div>text message</div>
         </ChatBarContainer>
     );
 };
