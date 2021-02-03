@@ -14,6 +14,7 @@ export const RoomContainer = styled.div`
 export const RoomChatAndUsers = styled.div`
   
     position: absolute;
+    z-index: 124;
     display: flex;
   
     right: 0;

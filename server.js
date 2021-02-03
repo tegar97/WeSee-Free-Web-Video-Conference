@@ -16,7 +16,6 @@ const usersId = {};
 
 const socketToRoom = {};
 io.on('connection',(socket) =>{
-    console.log('We have a new connection')
     socket.on('join',(room,callback) => {
         console.log(room)
         if (usersId[room]) {
@@ -33,7 +32,7 @@ io.on('connection',(socket) =>{
 
         socketToRoom[socket.id] = room;
         const usersInThisRoom = usersId[room].filter(id => id !== socket.id);
-
+        console.log('=>',usersInThisRoom)
         socket.emit("all users", usersInThisRoom);
         callback()
     });
@@ -52,8 +51,14 @@ io.on('connection',(socket) =>{
         
         if (room) {
             room = room.filter(id => id !== socket.id);
+            
             usersId[roomID] = room;
+            console.log(usersId)
+
         }
+
+
+        socket.broadcast.emit('user left',socket.id);
     });
 })
 app.get('/',(req,res) => {

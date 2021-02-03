@@ -1,14 +1,56 @@
 import React, { useState } from 'react';
+import { useAudio } from '../../context/Audio';
 import { RoomNavbarContainer, RoomNavbarItems } from './Room-navbar.styles';
 
-function RoomNavbar({ stream }) {
+function RoomNavbar({ stream, peers, userVideo, handle } :any) {
     const [videoMuted, setVideoMuted] = useState(false);
+    const [isFullscreen, setIsFullScreen] = useState(false);
+    const { audioMuted, setAudioMuted }: any = useAudio();
 
     function toggleMuteVideo() {
         if (stream) {
             setVideoMuted(!videoMuted);
             stream.getVideoTracks()[0].enabled = videoMuted;
         }
+    }
+    function muteAudio() {
+        if (stream) {
+            setAudioMuted(!audioMuted);
+            stream.getAudioTracks()[0].enabled = audioMuted;
+            console.log(stream.getAudioTracks()[0]);
+        }
+    }
+
+    function handleFullScreen() {
+        setIsFullScreen(!isFullscreen);
+        if (isFullscreen) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            handle.enter();
+        } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            handle.exit();
+        }
+    }
+
+    // const leaveMeeting = () => {
+    //     window.location.assign('http://localhost:3000/dasboard');
+
+    //     // peers.current.destroy();
+    //     // socket.emit('disconnect');
+    //     // window.location.reload();
+    // };
+
+    function shareScreen() {
+        // @ts-ignore
+
+        navigator.mediaDevices.getDisplayMedia({ cursor: true }).then((screenStream) => {
+            peers.current.replaceTrack(stream.getVideoTracks()[0], screenStream.getVideoTracks()[0], stream);
+            userVideo.current.srcObject = screenStream;
+            screenStream.getTracks()[0].onended = () => {
+                peers.current.replaceTrack(screenStream.getVideoTracks()[0], stream.getVideoTracks()[0], stream);
+                userVideo.current.srcObject = stream;
+            };
+        });
     }
     return (
         <RoomNavbarContainer>
@@ -18,11 +60,19 @@ function RoomNavbar({ stream }) {
                 </RoomNavbarItems>
             </div>
             <div className="grid grid-cols-6 gap-10">
-                <RoomNavbarItems>
-                    <i data-tip="Turn off mic" className="text-xl text-white fas fa-microphone"></i>
+                <RoomNavbarItems onClick={muteAudio}>
+                    {audioMuted ? (
+                        <i data-tip="Turn on mic" className="text-xl text-red-500 fas fa-microphone"></i>
+                    ) : (
+                        <i data-tip="Turn off mic" className="text-xl text-white fas fa-microphone"></i>
+                    )}
                 </RoomNavbarItems>
                 <RoomNavbarItems onClick={toggleMuteVideo}>
-                    <i data-tip="Turn off camera" className="text-xl text-white fas fa-video"></i>
+                    {videoMuted ? (
+                        <i data-tip="Turn on camera" className="text-xl text-red-500 fas fa-video"></i>
+                    ) : (
+                        <i data-tip="Turn off camera" className="text-xl text-white fas fa-video"></i>
+                    )}
                 </RoomNavbarItems>
                 <div className="flex items-center" style={{ gridColumn: '3/5', width: '100%' }}>
                     <button
@@ -32,14 +82,18 @@ function RoomNavbar({ stream }) {
                         Leave Meeting
                     </button>
                 </div>
-                <RoomNavbarItems>
-                    <i data-tip="Full Screen" className="text-xl text-white fas fa-expand-arrows-alt"></i>
+                <RoomNavbarItems onClick={handleFullScreen}>
+                    {isFullscreen ? (
+                        <i data-tip="Enter Full Screen" className="text-xl text-white fas fa-expand-arrows-alt"></i>
+                    ) : (
+                        <i data-tip="Exit Full Screen" className="text-xl text-white fas fa-compress-arrows-alt"></i>
+                    )}
                 </RoomNavbarItems>
                 <RoomNavbarItems>
                     <i data-tip="Record confrences" className="text-xl text-white fas fa-record-vinyl"></i>
                 </RoomNavbarItems>
             </div>
-            <div className="flex flex-col items-center cursor-pointer">
+            <div className="flex flex-col items-center cursor-pointer" onClick={shareScreen}>
                 <i className="text-xl text-white fas fa-desktop"></i>
                 <p className="text-white text-md">Share Screen</p>
             </div>

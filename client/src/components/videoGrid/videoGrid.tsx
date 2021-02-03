@@ -1,3 +1,5 @@
+// @ts-nochecsk
+
 import { useEffect, useRef } from 'react';
 import debounce from 'lodash/debounce';
 import { useAuth } from '../../context/AuthContext';
@@ -5,18 +7,22 @@ import { useAuth } from '../../context/AuthContext';
 const Video = (props) => {
     const ref = useRef(null);
 
-    console.log(props.peer);
     useEffect(() => {
         props.peer.on('stream', (stream) => {
             ref.current.srcObject = stream;
+            console.log(stream.getAudioTracks()[0].enabled);
         });
     }, [props.peer]);
 
-    return <video style={{ width: '100%', objectFit: 'cover' }} playsInline autoPlay ref={ref} />;
+    return (
+        <>
+            <video style={{ width: '100%', objectFit: 'cover' }} playsInline autoPlay ref={ref} />;
+        </>
+    );
 };
 
-const VideoGrid = ({ userVideo, peers }) => {
-    const { currentUser }: any = useAuth();
+const VideoGrid = ({ userVideo, peers, chatBar }) => {
+    const {}: any = useAuth();
     useEffect(() => {
         function recalculateLayout() {
             const gallery = document.getElementById('gallery');
@@ -78,7 +84,7 @@ const VideoGrid = ({ userVideo, peers }) => {
         const debouncedRecalculateLayout = debounce(recalculateLayout, 50);
         window.addEventListener('resize', debouncedRecalculateLayout);
         debouncedRecalculateLayout();
-    }, [peers]);
+    }, [peers, chatBar]);
     return (
         <div id="gallery">
             <div className="video-container">
@@ -91,9 +97,7 @@ const VideoGrid = ({ userVideo, peers }) => {
                         left: '2px',
                         color: '#fff',
                     }}
-                >
-                    {currentUser.displayName}
-                </div>
+                ></div>
             </div>
             {peers.map((peer, index) => {
                 return (
@@ -107,9 +111,7 @@ const VideoGrid = ({ userVideo, peers }) => {
                                 left: '2px',
                                 color: '#fff',
                             }}
-                        >
-                            {currentUser.displayName}
-                        </div>
+                        ></div>
                     </div>
                 );
             })}

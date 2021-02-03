@@ -1,19 +1,24 @@
+// @ts-nocheck
+
 import React, { useEffect, useState, useRef } from 'react';
 import RoomNavbar from '../../components/Room-navbar/Room-navbar';
 import RoomVideo from '../../components/Room-video/RoomVideo';
 import { RoomContainer, RoomChatAndUsers, RoomChatAndUsersItems, ItemExtends } from './Room.styles';
-import { io } from 'socket.io-client';
 import Peer from 'simple-peer';
-
-const ENDPOINT = 'http://localhost:5000/';
+import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+import { AudioProvider } from './../../context/Audio';
+import { ENDPOINT, socket } from '../../components/constant/socket';
+import ChatBar from '../../components/chatbar/ChatBar';
+import Draggable from 'react-draggable';
 
 const Room: React.FC = ({ match }: any) => {
     const [stream, setStream] = useState({});
     const userVideo = useRef(null);
     const peersRef = useRef([]);
     const [peers, setPeers] = useState([]);
-
-    let socket = io(ENDPOINT);
+    const handle = useFullScreenHandle();
+    const [chatBar, setChatBar] = useState(false);
+    console.log('ref', peersRef);
 
     useEffect(() => {
         const roomId = match.params.id;
@@ -28,6 +33,7 @@ const Room: React.FC = ({ match }: any) => {
             });
             socket.on('all users', (users) => {
                 const peers = [];
+                console.log('users', users);
                 users.forEach((userID) => {
                     const peer = createPeer(userID, socket.id, stream);
                     peersRef.current.push({
@@ -53,11 +59,18 @@ const Room: React.FC = ({ match }: any) => {
                 item.peer.signal(payload.signal);
             });
 
-            socket.on('disconnect', () => {
-                console.log('yoo disconnect');
-            });
+            // socket.on('user left', (id) => {
+            //     const peerObj = peersRef.current.find((p) => p.peerID === id);
+            //     console.log(peerObj);
+            //     if (peerObj) {
+            //         peerObj.peer.destroy();
+            //     }
+
+            //     const peers = peersRef.current.filter((p) => p.peerID !== id);
+            //     peersRef.current = peers;
+            //     setPeers(peers);
+            // });
         });
-        console.log(socket);
     }, [ENDPOINT]);
 
     function createPeer(userToSignal: any, callerID: any, stream: any) {
@@ -88,27 +101,52 @@ const Room: React.FC = ({ match }: any) => {
 
         return peer;
     }
-    console.log(stream);
+
+    // @ts-ignore: Unreachable code error
+
+    console.log('PEERS', peers);
+    console.log('PEERS Ref', peersRef);
+
+    console.log('stream', stream);
 
     return (
-        <RoomContainer>
-            <RoomChatAndUsers>
-                <RoomChatAndUsersItems>
-                    <i className="text-2xl text-white fas fa-users"></i>
-                    <ItemExtends>
-                        <span style={{ fontSize: '.7rem' }}>10</span>
-                    </ItemExtends>
-                </RoomChatAndUsersItems>
-                <RoomChatAndUsersItems style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}>
-                    <i className="text-2xl text-white fas fa-comment-dots"></i>
-                    <ItemExtends>
-                        <span style={{ fontSize: '.7rem' }}>5</span>
-                    </ItemExtends>
-                </RoomChatAndUsersItems>
-            </RoomChatAndUsers>
-            <RoomVideo userVideo={userVideo} peers={peers} />
-            <RoomNavbar stream={stream} />
-        </RoomContainer>
+        <FullScreen handle={handle}>
+            <div style={{ width: '100vw', height: '100vh', display: 'none' }}>
+                <Draggable bounds="parent">
+                    <div style={{ width: '1rem' }}>
+                        <div className="handle">Drag from here</div>
+                        <div>This readme is really dragging on...</div>
+                    </div>
+                </Draggable>
+            </div>
+            <RoomContainer>
+                {chatBar ? (
+                    ''
+                ) : (
+                    <RoomChatAndUsers>
+                        <RoomChatAndUsersItems>
+                            <i className="text-2xl text-white fas fa-users"></i>
+                            <ItemExtends>
+                                <span style={{ fontSize: '.7rem' }}>10</span>
+                            </ItemExtends>
+                        </RoomChatAndUsersItems>
+                        <RoomChatAndUsersItems
+                            onClick={() => setChatBar(!chatBar)}
+                            style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}
+                        >
+                            <i className="text-2xl text-white fas fa-comment-dots"></i>
+                            <ItemExtends>
+                                <span style={{ fontSize: '.7rem' }}>5</span>
+                            </ItemExtends>
+                        </RoomChatAndUsersItems>
+                    </RoomChatAndUsers>
+                )}
+                <AudioProvider>
+                    <RoomVideo userVideo={userVideo} peers={peers} stream={stream} chatBar={chatBar} />
+                    <RoomNavbar stream={stream} peers={peersRef} userVideo={userVideo} handle={handle} />
+                </AudioProvider>
+            </RoomContainer>
+        </FullScreen>
     );
 };
 
