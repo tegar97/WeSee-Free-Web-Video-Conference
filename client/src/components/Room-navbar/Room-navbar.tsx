@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAudio } from '../../context/Audio';
 import { RoomNavbarContainer, RoomNavbarItems } from './Room-navbar.styles';
 
-function RoomNavbar({ stream, peers, userVideo, handle } :any) {
+function RoomNavbar({ stream, peers, userVideo, handle }: any) {
     const [videoMuted, setVideoMuted] = useState(false);
     const [isFullscreen, setIsFullScreen] = useState(false);
     const { audioMuted, setAudioMuted }: any = useAudio();

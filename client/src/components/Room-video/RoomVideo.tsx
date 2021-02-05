@@ -5,13 +5,17 @@ import ChatBar from '../chatbar/ChatBar';
 import RoomMenu from '../RoomMenu/RoomMenu';
 import VideoGrid from '../videoGrid/videoGrid';
 import { RoomVideoContainer } from './RoomVideo.styles';
-const RoomVideo = ({ userVideo, peers, stream, chatBar }) => {
+const RoomVideo = ({ userVideo, peers, stream, roomMenu, setRoomMenu }) => {
     return (
-        <RoomVideoContainer style={{ width: chatBar ? '70%' : '100%' }}>
-            <RoomMenu>
-                <ChatBar />
-            </RoomMenu>
-            <VideoGrid userVideo={userVideo} peers={peers} chatBar={chatBar} />
+        <RoomVideoContainer>
+            {roomMenu ? (
+                <RoomMenu setRoomMenu={setRoomMenu}>
+                    <ChatBar />
+                </RoomMenu>
+            ) : (
+                ''
+            )}
+            <VideoGrid userVideo={userVideo} peers={peers} />
         </RoomVideoContainer>
     );
 };

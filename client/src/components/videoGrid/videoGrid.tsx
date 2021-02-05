@@ -6,13 +6,14 @@ import { useAuth } from '../../context/AuthContext';
 
 const Video = (props) => {
     const ref = useRef(null);
+    console.log('peers', props.peer);
 
     useEffect(() => {
         props.peer.on('stream', (stream) => {
             ref.current.srcObject = stream;
             console.log(stream.getAudioTracks()[0].enabled);
         });
-    }, [props.peer]);
+    }, [props.peer, ref]);
 
     return (
         <>
@@ -21,7 +22,7 @@ const Video = (props) => {
     );
 };
 
-const VideoGrid = ({ userVideo, peers, chatBar }) => {
+const VideoGrid = ({ userVideo, peers }) => {
     const {}: any = useAuth();
     useEffect(() => {
         function recalculateLayout() {
@@ -84,7 +85,7 @@ const VideoGrid = ({ userVideo, peers, chatBar }) => {
         const debouncedRecalculateLayout = debounce(recalculateLayout, 50);
         window.addEventListener('resize', debouncedRecalculateLayout);
         debouncedRecalculateLayout();
-    }, [peers, chatBar]);
+    }, [peers]);
     return (
         <div id="gallery">
             <div className="video-container">
@@ -102,7 +103,7 @@ const VideoGrid = ({ userVideo, peers, chatBar }) => {
             {peers.map((peer, index) => {
                 return (
                     <div className="video-container">
-                        <Video key={index} peer={peer} />
+                        {peer ? <Video key={index} peer={peer} /> : 'Loading ...'}
                         <div
                             style={{
                                 position: 'absolute',
@@ -114,7 +115,8 @@ const VideoGrid = ({ userVideo, peers, chatBar }) => {
                         ></div>
                     </div>
                 );
-            })}
+            })}{' '}
+            : ''
         </div>
     );
 };

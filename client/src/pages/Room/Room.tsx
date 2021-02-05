@@ -10,23 +10,33 @@ import { AudioProvider } from './../../context/Audio';
 import { ENDPOINT, socket } from '../../components/constant/socket';
 import ChatBar from '../../components/chatbar/ChatBar';
 import Draggable from 'react-draggable';
+import { useAuth } from '../../context/AuthContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import queryString from 'query-string';
+import { useMessage } from '../../context/chatMessage';
 
-const Room: React.FC = ({ match }: any) => {
+const Room: React.FC = ({ match, location }: any) => {
+    const { messages, setMessages } = useMessage();
     const [stream, setStream] = useState({});
     const userVideo = useRef(null);
     const peersRef = useRef([]);
     const [peers, setPeers] = useState([]);
+    const [peers2, setPeers2] = useState([]);
     const handle = useFullScreenHandle();
-    const [chatBar, setChatBar] = useState(false);
-    console.log('ref', peersRef);
+    const [roomMenu, setRoomMenu] = useState(false);
+
+    let [systemMessage, setSystemMessage] = useState({});
+    const { currentUser } = useAuth();
+    const name = currentUser.displayName;
+    const room = match.params.id;
 
     useEffect(() => {
-        const roomId = match.params.id;
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             setStream(stream);
 
             userVideo.current.srcObject = stream;
-            socket.emit('join', roomId, (error) => {
+            socket.emit('join', { name, room }, (error) => {
                 if (error) {
                     alert(error);
                 }
@@ -66,12 +76,24 @@ const Room: React.FC = ({ match }: any) => {
             //         peerObj.peer.destroy();
             //     }
 
-            //     const peers = peersRef.current.filter((p) => p.peerID !== id);
+            //     const peers = peersRef.current.filter((p) => p.peerID !== id)
+            //     console.log('afasf', peers);
             //     peersRef.current = peers;
             //     setPeers(peers);
+            //     console.log(peers)
             // });
         });
     }, [ENDPOINT]);
+
+    useEffect(() => {
+        socket.on('message', (message) => {
+            console.log(messages);
+            setMessages((messages) => [...messages, message]);
+            if (message.user === 'system') {
+                toast.info(message.text);
+            }
+        });
+    }, []);
 
     function createPeer(userToSignal: any, callerID: any, stream: any) {
         const peer = new Peer({
@@ -111,38 +133,45 @@ const Room: React.FC = ({ match }: any) => {
 
     return (
         <FullScreen handle={handle}>
-            <div style={{ width: '100vw', height: '100vh', display: 'none' }}>
-                <Draggable bounds="parent">
-                    <div style={{ width: '1rem' }}>
-                        <div className="handle">Drag from here</div>
-                        <div>This readme is really dragging on...</div>
-                    </div>
-                </Draggable>
-            </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable={false}
+                pauseOnHover
+            />
+
             <RoomContainer>
-                {chatBar ? (
-                    ''
-                ) : (
-                    <RoomChatAndUsers>
-                        <RoomChatAndUsersItems>
-                            <i className="text-2xl text-white fas fa-users"></i>
-                            <ItemExtends>
-                                <span style={{ fontSize: '.7rem' }}>10</span>
-                            </ItemExtends>
-                        </RoomChatAndUsersItems>
-                        <RoomChatAndUsersItems
-                            onClick={() => setChatBar(!chatBar)}
-                            style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}
-                        >
-                            <i className="text-2xl text-white fas fa-comment-dots"></i>
-                            <ItemExtends>
-                                <span style={{ fontSize: '.7rem' }}>5</span>
-                            </ItemExtends>
-                        </RoomChatAndUsersItems>
-                    </RoomChatAndUsers>
-                )}
+                <RoomChatAndUsers>
+                    <RoomChatAndUsersItems>
+                        <i className="text-2xl text-white fas fa-users"></i>
+                        <ItemExtends>
+                            <span style={{ fontSize: '.7rem' }}>10</span>
+                        </ItemExtends>
+                    </RoomChatAndUsersItems>
+                    <RoomChatAndUsersItems
+                        onClick={() => setRoomMenu(!roomMenu)}
+                        style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}
+                    >
+                        <i className="text-2xl text-white fas fa-comment-dots"></i>
+                        <ItemExtends>
+                            <span style={{ fontSize: '.7rem' }}>5</span>
+                        </ItemExtends>
+                    </RoomChatAndUsersItems>
+                </RoomChatAndUsers>
+
                 <AudioProvider>
-                    <RoomVideo userVideo={userVideo} peers={peers} stream={stream} chatBar={chatBar} />
+                    <RoomVideo
+                        userVideo={userVideo}
+                        peers={peers}
+                        stream={stream}
+                        roomMenu={roomMenu}
+                        setRoomMenu={setRoomMenu}
+                    />
                     <RoomNavbar stream={stream} peers={peersRef} userVideo={userVideo} handle={handle} />
                 </AudioProvider>
             </RoomContainer>
