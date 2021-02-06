@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAudio } from '../../context/Audio';
+import SettingApp from '../settings/settings';
 import { RoomNavbarContainer, RoomNavbarItems } from './Room-navbar.styles';
 
 function RoomNavbar({ stream, peers, handle, userVideo }: any) {
@@ -17,7 +18,6 @@ function RoomNavbar({ stream, peers, handle, userVideo }: any) {
         if (stream) {
             setAudioMuted(!audioMuted);
             stream.getAudioTracks()[0].enabled = audioMuted;
-            console.log(stream.getAudioTracks()[0]);
         }
     }
 
@@ -41,7 +41,6 @@ function RoomNavbar({ stream, peers, handle, userVideo }: any) {
     // };
 
     function shareScreen() {
-        console.log('tes', peers.current[0].peer);
         // @ts-ignore
 
         navigator.mediaDevices.getDisplayMedia({ cursor: true }).then((screenStream) => {
@@ -60,9 +59,11 @@ function RoomNavbar({ stream, peers, handle, userVideo }: any) {
     return (
         <RoomNavbarContainer>
             <div>
-                <RoomNavbarItems>
-                    <i data-tip="settings" className="p-1 text-xl text-white fas fa-cog"></i>
-                </RoomNavbarItems>
+                <SettingApp>
+                    <RoomNavbarItems>
+                        <i data-tip="settings" className="p-1 text-xl text-white fas fa-cog"></i>
+                    </RoomNavbarItems>
+                </SettingApp>
             </div>
             <div className="grid grid-cols-6 gap-10">
                 <RoomNavbarItems onClick={muteAudio}>

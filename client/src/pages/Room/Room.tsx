@@ -15,6 +15,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import queryString from 'query-string';
 import { useMessage } from '../../context/chatMessage';
+import { Howl } from 'howler';
+import ringtone from './../../sounds/enterRoom.mp3';
+const ringtoneSound = new Howl({
+    src: [ringtone],
+    loop: false,
+});
 
 const Room: React.FC = ({ match, location }: any) => {
     const { messages, setMessages } = useMessage();
@@ -40,14 +46,16 @@ const Room: React.FC = ({ match, location }: any) => {
             screenShareRef.current = stream;
             userVideo.current.srcObject = stream;
             socket.emit('join', { name, room }, (error) => {
+                ringtoneSound.play();
+
                 if (error) {
                     alert(error);
                 }
             });
             socket.on('all users', (users) => {
                 const peers = [];
-                console.log('users', users);
                 users.forEach((userID) => {
+                    console.log('users', userID.id);
                     const peer = createPeer(userID, socket.id, stream);
                     peersRef.current.push({
                         peerID: userID,
@@ -90,7 +98,6 @@ const Room: React.FC = ({ match, location }: any) => {
 
     useEffect(() => {
         socket.on('message', (message) => {
-            console.log(messages);
             setMessages((messages) => [...messages, message]);
             if (message.user === 'system') {
                 toast.info(message.text);
@@ -126,13 +133,6 @@ const Room: React.FC = ({ match, location }: any) => {
 
         return peer;
     }
-    console.log(screenShareRef);
-    // @ts-ignore: Unreachable code error
-
-    console.log('PEERS', peers);
-    console.log('PEERS Ref', peersRef);
-
-    console.log('stream', stream);
 
     return (
         <FullScreen handle={handle}>

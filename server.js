@@ -20,9 +20,8 @@ io.on('connection',(socket) =>{
     socket.on('join',({name,room},callback) => {
         const {error,user} = addUser({id : socket.id,name,room})
 
-        console.log(user)
         if(error) return callback(error)
-
+        
         // ADD ID FOR PEER
         if (usersId[room]) {
             const length = usersId[room].length;
@@ -31,15 +30,21 @@ io.on('connection',(socket) =>{
                 return;
             }
             usersId[room].push(socket.id);
+            
         } else {
             console.log(usersId[room])
 
-            usersId[room] = [socket.id];
+            usersId[room] = [socket.id]
+
         }
+        console.log(usersId[room])
 
         socketToRoom[socket.id] = room;
         const usersInThisRoom = usersId[room].filter(id => id !== socket.id);
-        console.log('user in room',usersInThisRoom)
+    
+        
+   
+ 
         socket.emit("all users", usersInThisRoom);
 
 

@@ -22,7 +22,6 @@ const Dasboard: React.FC = () => {
 
     const CreateRoom = async () => {
         await db.collection('room').add({ roomId: uuidv4(), code: makeid(5), users: [currentUser.displayName] });
-        console.log(currentUser.displayName);
     };
     const joinRoom = async () => {
         const usersCollection = db.collection('room');

@@ -7,7 +7,6 @@ import './scroll.scss';
 const ChatBar = () => {
     const messageRef = useRef(null);
     const { messages }: any = useMessage();
-    console.log('asdsad', messages);
     const sendMessage = (event) => {
         event.preventDefault();
 
