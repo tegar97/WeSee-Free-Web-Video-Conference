@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import React, { useEffect } from 'react';
+import Audiolevel from '../Audio-level/Audio-level';
 import { AudioSettingContainer, AudiSettingText, Select } from './Audio-setting.styles';
 function AudioSetting({ stream, peers, userVideo }) {
     useEffect(() => {
@@ -130,6 +131,7 @@ function AudioSetting({ stream, peers, userVideo }) {
                     <div style={{ display: 'flex' }}>
                         <Select id="audioOutput"></Select>
                     </div>
+                    <Audiolevel />
                 </div>
                 <div style={{ marginTop: '2rem' }}>
                     <AudiSettingText className="text-white text-1xl text-bold">Speaker</AudiSettingText>

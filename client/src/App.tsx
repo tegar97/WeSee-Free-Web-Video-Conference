@@ -9,6 +9,7 @@ import Login from './pages/Login/Login';
 import Prepare from './pages/preparePages/prepare';
 import Register from './pages/Register/Register';
 import Room from './pages/Room/Room';
+import Test from './pages/test/Test';
 
 const App: React.FC = () => {
     return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/signup" component={Register} />
                     <Route exact path="/prepare" component={Prepare} />
+                    <Route exact path="/test" component={Test} />
                     <MessageProvider>
                         <Route exact path="/room/:id" component={Room} />
                     </MessageProvider>
