@@ -25,6 +25,8 @@ const Room: React.FC = ({ match, location }: any) => {
     const [peers2, setPeers2] = useState([]);
     const handle = useFullScreenHandle();
     const [roomMenu, setRoomMenu] = useState(false);
+    const [isScreenShare, setIsScreenShare] = useState(false);
+    const screenShareRef = useRef(null);
 
     let [systemMessage, setSystemMessage] = useState({});
     const { currentUser } = useAuth();
@@ -35,6 +37,7 @@ const Room: React.FC = ({ match, location }: any) => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             setStream(stream);
 
+            screenShareRef.current = stream;
             userVideo.current.srcObject = stream;
             socket.emit('join', { name, room }, (error) => {
                 if (error) {
@@ -123,7 +126,7 @@ const Room: React.FC = ({ match, location }: any) => {
 
         return peer;
     }
-
+    console.log(screenShareRef);
     // @ts-ignore: Unreachable code error
 
     console.log('PEERS', peers);
@@ -159,7 +162,9 @@ const Room: React.FC = ({ match, location }: any) => {
                     >
                         <i className="text-2xl text-white fas fa-comment-dots"></i>
                         <ItemExtends>
-                            <span style={{ fontSize: '.7rem' }}>5</span>
+                            <span style={{ fontSize: '.7rem' }}>
+                                {messages.filter((m) => m.user !== 'system').length}
+                            </span>
                         </ItemExtends>
                     </RoomChatAndUsersItems>
                 </RoomChatAndUsers>
@@ -171,8 +176,18 @@ const Room: React.FC = ({ match, location }: any) => {
                         stream={stream}
                         roomMenu={roomMenu}
                         setRoomMenu={setRoomMenu}
+                        isScreenShare={isScreenShare}
+                        screenShareRef={screenShareRef}
                     />
-                    <RoomNavbar stream={stream} peers={peersRef} userVideo={userVideo} handle={handle} />
+                    <RoomNavbar
+                        isScreenShare={isScreenShare}
+                        setIsScreenShare={setIsScreenShare}
+                        stream={stream}
+                        peers={peersRef}
+                        userVideo={userVideo}
+                        handle={handle}
+                        screenShareRef={screenShareRef}
+                    />
                 </AudioProvider>
             </RoomContainer>
         </FullScreen>

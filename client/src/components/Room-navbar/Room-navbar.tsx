@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAudio } from '../../context/Audio';
 import { RoomNavbarContainer, RoomNavbarItems } from './Room-navbar.styles';
 
-function RoomNavbar({ stream, peers, userVideo, handle }: any) {
+function RoomNavbar({ stream, peers, handle, userVideo }: any) {
     const [videoMuted, setVideoMuted] = useState(false);
     const [isFullscreen, setIsFullScreen] = useState(false);
     const { audioMuted, setAudioMuted }: any = useAudio();
@@ -41,13 +41,18 @@ function RoomNavbar({ stream, peers, userVideo, handle }: any) {
     // };
 
     function shareScreen() {
+        console.log('tes', peers.current[0].peer);
         // @ts-ignore
 
         navigator.mediaDevices.getDisplayMedia({ cursor: true }).then((screenStream) => {
-            peers.current.replaceTrack(stream.getVideoTracks()[0], screenStream.getVideoTracks()[0], stream);
+            peers.current[0].peer.replaceTrack(stream.getVideoTracks()[0], screenStream.getVideoTracks()[0], stream);
             userVideo.current.srcObject = screenStream;
             screenStream.getTracks()[0].onended = () => {
-                peers.current.replaceTrack(screenStream.getVideoTracks()[0], stream.getVideoTracks()[0], stream);
+                peers.current[0].peer.replaceTrack(
+                    screenStream.getVideoTracks()[0],
+                    stream.getVideoTracks()[0],
+                    stream,
+                );
                 userVideo.current.srcObject = stream;
             };
         });

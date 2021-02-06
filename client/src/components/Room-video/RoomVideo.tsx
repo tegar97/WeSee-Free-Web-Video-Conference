@@ -15,6 +15,7 @@ const RoomVideo = ({ userVideo, peers, stream, roomMenu, setRoomMenu }) => {
             ) : (
                 ''
             )}
+
             <VideoGrid userVideo={userVideo} peers={peers} />
         </RoomVideoContainer>
     );
