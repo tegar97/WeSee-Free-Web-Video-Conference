@@ -59,7 +59,7 @@ function RoomNavbar({ stream, peers, handle, userVideo }: any) {
     return (
         <RoomNavbarContainer>
             <div>
-                <SettingApp>
+                <SettingApp stream={stream} peers={peers} userVideo={userVideo}>
                     <RoomNavbarItems>
                         <i data-tip="settings" className="p-1 text-xl text-white fas fa-cog"></i>
                     </RoomNavbarItems>

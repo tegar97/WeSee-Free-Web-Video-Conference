@@ -9,7 +9,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Prepare from '../../pages/preparePages/prepare';
 import AudioSetting from '../Audio-setting/Audio-setting';
 
-const SettingApp = ({ children }) => {
+const SettingApp = ({ stream, peers, children, userVideo }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {}, []);
@@ -30,7 +30,7 @@ const SettingApp = ({ children }) => {
                         bottom: 'auto',
                         marginRight: '-50%',
                         transform: 'translate(-50%, -50%)',
-                        width: '50%',
+                        width: '60%',
                         height: '65%',
                         backgroundColor: '#1c1f2e',
                         outline: 'none',
@@ -52,7 +52,7 @@ const SettingApp = ({ children }) => {
                     <div style={{ display: 'flex', height: '100%', width: '100%' }}>
                         <SettingSideBar />
                         <div style={{ width: '100%' }}>
-                            <AudioSetting />
+                            <AudioSetting stream={stream} peers={peers} userVideo={userVideo} />
                         </div>
                     </div>
                 </div>
