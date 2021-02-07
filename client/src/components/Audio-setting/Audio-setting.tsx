@@ -108,7 +108,7 @@ function AudioSetting({ stream, peers, userVideo }) {
         videoSelect.onchange = start;
 
         start();
-    }, []);
+    }, [stream]);
     return (
         <AudioSettingContainer>
             <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -129,14 +129,14 @@ function AudioSetting({ stream, peers, userVideo }) {
                 <div style={{ marginTop: '2rem' }}>
                     <AudiSettingText className="text-white text-1xl text-bold">Mikrofon</AudiSettingText>
                     <div style={{ display: 'flex' }}>
-                        <Select id="audioOutput"></Select>
+                        <Select id="audioSource"></Select>
                     </div>
-                    <Audiolevel />
+                    <Audiolevel stream={stream} />
                 </div>
                 <div style={{ marginTop: '2rem' }}>
                     <AudiSettingText className="text-white text-1xl text-bold">Speaker</AudiSettingText>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Select id="audioSource"></Select>
+                        <Select id="audioOutput"></Select>
                     </div>
                 </div>
             </div>

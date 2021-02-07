@@ -2,7 +2,7 @@ const express = require('express')
 const socketIo = require('socket.io')
 const http = require('http');
 const cors = require('cors');
-const { addUser ,removeUser,getUser} = require('./users');
+const { addUser ,removeUser,getUser,getUsersinRoom} = require('./users');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server,{
@@ -51,6 +51,8 @@ io.on('connection',(socket) =>{
         socket.emit('message',{user: 'system',text: `${user.name},welcome to the room`})
         socket.broadcast.to(user.room).emit('message',{user : 'system',text : `${user.name},has joined!`})
         socket.join(user.room);
+        io.to(user.room).emit('roomData',{room: user.room,users: getUsersinRoom(user.room)})
+        console.log( getUsersinRoom(user.room))
 
 
 
@@ -77,6 +79,8 @@ io.on('connection',(socket) =>{
         console.log(user)
         if(user) {
             io.to(user.room).emit('message',{user: 'system',text: `${user.name} has left`})
+            io.to(user.room).emit('roomData', { room: user.room, users: getUsersinRoom(user.room)});
+
         }
         const roomID = socketToRoom[socket.id];
         let room = usersId[roomID];

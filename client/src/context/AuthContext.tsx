@@ -7,6 +7,7 @@ export function useAuth() {
 }
 export function AuthProvider({ children }: any) {
     const [currentUser, setCurrentUser]: any = useState('');
+    const [users, setUsers] = useState({});
     const [loading, setLoading] = useState(true);
 
     function signUp(email: any, password: any) {
@@ -44,6 +45,8 @@ export function AuthProvider({ children }: any) {
         resetPassword,
         updateName,
         GoogleAuth,
+        users,
+        setUsers,
     };
 
     return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;

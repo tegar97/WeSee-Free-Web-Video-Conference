@@ -22,17 +22,17 @@ const RoomMenuNavbar = styled.div`
     align-items: center;
     justify-content: space-between;
 `;
-const RoomMenu = ({ children, setRoomMenu }) => {
+const RoomMenu = ({ children, setRoomMenu, icon, title }) => {
     return (
         <Draggable bounds="parent">
             <RoomMenuContainer>
                 <RoomMenuNavbar>
                     <div>
                         <i class="far fa-comment-alt text-xl"></i>
-                        <span className="ml-3 text-xl">Chat</span>
+                        <span className="ml-3 text-xl">{title}</span>
                     </div>
                     <button>
-                        <i onClick={() => setRoomMenu(false)} class="fa fa-times text-2xl"></i>
+                        <i onClick={() => setRoomMenu(false)} className={`${icon} text-2xl`}></i>
                     </button>
                 </RoomMenuNavbar>
                 {children}

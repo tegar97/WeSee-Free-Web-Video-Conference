@@ -17,6 +17,7 @@ import queryString from 'query-string';
 import { useMessage } from '../../context/chatMessage';
 import { Howl } from 'howler';
 import ringtone from './../../sounds/enterRoom.mp3';
+import hark from 'hark';
 const ringtoneSound = new Howl({
     src: [ringtone],
     loop: false,
@@ -24,6 +25,8 @@ const ringtoneSound = new Howl({
 
 const Room: React.FC = ({ match, location }: any) => {
     const { messages, setMessages } = useMessage();
+    const { users } = useAuth();
+
     const [stream, setStream] = useState({});
     const userVideo = useRef(null);
     const peersRef = useRef([]);
@@ -33,6 +36,7 @@ const Room: React.FC = ({ match, location }: any) => {
     const [roomMenu, setRoomMenu] = useState(false);
     const [isScreenShare, setIsScreenShare] = useState(false);
     const screenShareRef = useRef(null);
+    const [menuUser, setUserMenu] = useState(false);
 
     let [systemMessage, setSystemMessage] = useState({});
     const { currentUser } = useAuth();
@@ -45,6 +49,7 @@ const Room: React.FC = ({ match, location }: any) => {
 
             screenShareRef.current = stream;
             userVideo.current.srcObject = stream;
+
             socket.emit('join', { name, room }, (error) => {
                 ringtoneSound.play();
 
@@ -95,7 +100,16 @@ const Room: React.FC = ({ match, location }: any) => {
             // });
         });
     }, [ENDPOINT]);
-
+    useEffect(() => {
+        // var options = {};
+        // var speechEvents = hark(, options);
+        // speechEvents.on('speaking', function () {
+        //     console.log('yooo');
+        // });
+        // speechEvents.on('stopped_speaking', function () {
+        //     console.log('stopped_speaking');
+        // console.log('2', peersRef);
+    }, []);
     useEffect(() => {
         socket.on('message', (message) => {
             setMessages((messages) => [...messages, message]);
@@ -150,10 +164,10 @@ const Room: React.FC = ({ match, location }: any) => {
 
             <RoomContainer>
                 <RoomChatAndUsers>
-                    <RoomChatAndUsersItems>
+                    <RoomChatAndUsersItems onClick={() => setUserMenu(!menuUser)}>
                         <i className="text-2xl text-white fas fa-users"></i>
                         <ItemExtends>
-                            <span style={{ fontSize: '.7rem' }}>10</span>
+                            <span style={{ fontSize: '.7rem' }}>{users.length}</span>
                         </ItemExtends>
                     </RoomChatAndUsersItems>
                     <RoomChatAndUsersItems
@@ -176,6 +190,8 @@ const Room: React.FC = ({ match, location }: any) => {
                         stream={stream}
                         roomMenu={roomMenu}
                         setRoomMenu={setRoomMenu}
+                        setUserMenu={setUserMenu}
+                        menuUser={menuUser}
                         isScreenShare={isScreenShare}
                         screenShareRef={screenShareRef}
                     />

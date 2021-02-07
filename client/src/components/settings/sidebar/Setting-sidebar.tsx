@@ -19,24 +19,7 @@ function SettingSideBar() {
                         }}
                     >
                         <i className="text-xl fas fa-video"></i>
-                        <p className="ml-5 text-md">Video</p>
-                    </div>
-                </li>
-                <li>
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-
-                            padding: '.5rem 1rem',
-                            width: '90%',
-                            borderTopRightRadius: '10rem',
-                            borderBottomRightRadius: '10rem',
-                        }}
-                    >
-                        <i className="text-xl fas fa-video"></i>
-                        <p className="ml-5 text-md">Video</p>
+                        <p className="ml-5 text-md">Settings</p>
                     </div>
                 </li>
             </ul>

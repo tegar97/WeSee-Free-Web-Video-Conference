@@ -44,15 +44,27 @@ function RoomNavbar({ stream, peers, handle, userVideo }: any) {
         // @ts-ignore
 
         navigator.mediaDevices.getDisplayMedia({ cursor: true }).then((screenStream) => {
-            peers.current[0].peer.replaceTrack(stream.getVideoTracks()[0], screenStream.getVideoTracks()[0], stream);
-            userVideo.current.srcObject = screenStream;
-            screenStream.getTracks()[0].onended = () => {
+            if (!peers.current[0]) {
+                userVideo.current.srcObject = screenStream;
+            } else {
                 peers.current[0].peer.replaceTrack(
-                    screenStream.getVideoTracks()[0],
                     stream.getVideoTracks()[0],
+                    screenStream.getVideoTracks()[0],
                     stream,
                 );
-                userVideo.current.srcObject = stream;
+                userVideo.current.srcObject = screenStream;
+            }
+            screenStream.getTracks()[0].onended = () => {
+                if (!peers.current[0]) {
+                    userVideo.current.srcObject = stream;
+                } else {
+                    peers.current[0].peer.replaceTrack(
+                        screenStream.getVideoTracks()[0],
+                        stream.getVideoTracks()[0],
+                        stream,
+                    );
+                    userVideo.current.srcObject = stream;
+                }
             };
         });
     }

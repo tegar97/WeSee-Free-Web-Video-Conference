@@ -1,29 +1,54 @@
 // @ts-nochecsk
 
-import { useEffect, useRef } from 'react';
+//@ts-nocheck
+import { useEffect, useRef, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { useAuth } from '../../context/AuthContext';
-
-const Video = (props) => {
+import hark from 'hark';
+const Video = (props, { setPin }) => {
     const ref = useRef(null);
-    console.log('peers', props.peer);
+    console.log('peers');
 
     useEffect(() => {
+        console.log(props.peer);
         props.peer.on('stream', (stream) => {
             ref.current.srcObject = stream;
+            ref.current.id = stream.id;
+            console.log('stream', stream);
+            var options = {};
+
+            const speechEvents = hark(stream, options);
+            speechEvents.on('speaking', function () {
+                console.log('speaking');
+                ref.current.style.border = '8px solid #19ff57';
+            });
+            speechEvents.on('stopped_speaking', function () {
+                console.log('stopped_speaking');
+                ref.current.style.border = '';
+            });
+
             console.log(stream.getAudioTracks()[0].enabled);
         });
-    }, [props.peer, ref]);
+    }, [props.peer]);
 
     return (
         <>
-            <video style={{ width: '100%', objectFit: 'cover' }} playsInline autoPlay ref={ref} />;
+            <video
+                onClick={(e) => setPin(ref.current.id)}
+                style={{ width: '100%', objectFit: 'cover' }}
+                playsInline
+                autoPlay
+                ref={ref}
+            />
+            ;
         </>
     );
 };
 
 const VideoGrid = ({ userVideo, peers }) => {
     const {}: any = useAuth();
+    const [pin, setPin] = useState('');
+    console.log(pin);
     useEffect(() => {
         function recalculateLayout() {
             const gallery = document.getElementById('gallery');
@@ -103,7 +128,7 @@ const VideoGrid = ({ userVideo, peers }) => {
             {peers.map((peer, index) => {
                 return (
                     <div className="video-container">
-                        {peer ? <Video key={index} peer={peer} /> : 'Loading ...'}
+                        {peer ? <Video setPin={setPin} key={index} peer={peer} /> : 'Loading ...'}
                         <div
                             style={{
                                 position: 'absolute',

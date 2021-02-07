@@ -1,21 +1,21 @@
 //@ts-nocheck
 import React, { useEffect } from 'react';
+import { AudiSettingText } from '../Audio-setting/Audio-setting.styles';
 import { SoundMeter } from './soundmeters';
 
-function Audiolevel() {
+function Audiolevel({ stream }) {
     useEffect(() => {
         const startButton = document.getElementById('startButton');
-        const stopButton = document.getElementById('stopButton');
+        const stopBotton = document.getElementById('stopButton');
+        const audiotest = document.getElementById('audiotest');
+        stopBotton.style.display = 'none';
+
         startButton.onclick = start;
-        stopButton.onclick = stop;
+        stopBotton.onclick = stop;
 
         const instantMeter = document.querySelector('#instant meter');
-        const slowMeter = document.querySelector('#slow meter');
-        const clipMeter = document.querySelector('#clip meter');
 
         const instantValueDisplay = document.querySelector('#instant .value');
-        const slowValueDisplay = document.querySelector('#slow .value');
-        const clipValueDisplay = document.querySelector('#clip .value');
 
         // Put variables in global scope to make them available to the browser console.
         const constraints = (window.constraints = {
@@ -28,7 +28,12 @@ function Audiolevel() {
         function handleSuccess(stream) {
             // Put variables in global scope to make them available to the
             // browser console.
+            console.log('0', stream);
+            console.log('1', window.audioContext);
             window.stream = stream;
+
+            audiotest.srcObject = stream;
+            console.log('trigger');
             const soundMeter = (window.soundMeter = new SoundMeter(window.audioContext));
             soundMeter.connectToSource(stream, function (e) {
                 if (e) {
@@ -37,8 +42,6 @@ function Audiolevel() {
                 }
                 meterRefresh = setInterval(() => {
                     instantMeter.value = instantValueDisplay.innerText = soundMeter.instant.toFixed(2);
-                    slowMeter.value = slowValueDisplay.innerText = soundMeter.slow.toFixed(2);
-                    clipMeter.value = clipValueDisplay.innerText = soundMeter.clip;
                 }, 200);
             });
         }
@@ -49,8 +52,8 @@ function Audiolevel() {
 
         function start() {
             console.log('Requesting local stream');
-            startButton.disabled = true;
-            stopButton.disabled = false;
+            startButton.style.display = 'none';
+            stopBotton.style.display = 'inline-block';
 
             try {
                 window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -58,46 +61,59 @@ function Audiolevel() {
             } catch (e) {
                 alert('Web Audio API not supported.');
             }
-
-            navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
+            handleSuccess(stream);
         }
 
         function stop() {
             console.log('Stopping local stream');
-            startButton.disabled = false;
-            stopButton.disabled = true;
+            startButton.style.display = 'inline-block';
+            stopBotton.style.display = 'none';
 
             window.stream.getTracks().forEach((track) => track.stop());
             window.soundMeter.stop();
+
             clearInterval(meterRefresh);
             instantMeter.value = instantValueDisplay.innerText = '';
-            slowMeter.value = slowValueDisplay.innerText = '';
-            clipMeter.value = clipValueDisplay.innerText = '';
         }
-    }, []);
+    }, [stream]);
     return (
-        <div id="meters">
-            <div id="instant">
-                <div className="label">Instant:</div>
-                <meter high="0.25" max="1" value="0"></meter>
+        <div id="meters" className="mt-6">
+            <AudiSettingText>Mic Test</AudiSettingText>
+            <div id="instant" className="flex flex-row items-center mt-4">
+                <button
+                    type="button"
+                    id="startButton"
+                    className="text-lg"
+                    style={{
+                        backgroundColor: '#0e78f9',
+                        color: '#fff',
+                        width: '7rem',
+                        height: 'auto',
+                        padding: '.5rem .4rem',
+                        border: 'none',
+                    }}
+                >
+                    Lest Check
+                </button>
+                <button
+                    type="button"
+                    id="stopButton"
+                    className="text-lg"
+                    style={{
+                        backgroundColor: '#0e78f9',
+                        color: '#fff',
+                        width: '7rem',
+                        height: 'auto',
+                        padding: '.5rem .4rem',
+                        border: 'none',
+                    }}
+                >
+                    Stop
+                </button>
+                <meter className="ml-3 " style={{ width: '100%' }} high="0.25" max="1" value="0"></meter>
                 <div className="value"></div>
+                <audio playsInline autoPlay id="audiotest" hidden />
             </div>
-            <div id="slow">
-                <div className="label">Slow:</div>
-                <meter high="0.25" max="1" value="0"></meter>
-                <div className="value"></div>
-            </div>
-            <div id="clip">
-                <div className="label">Clip:</div>
-                <meter max="1" value="0"></meter>
-                <div className="value"></div>
-            </div>
-            <button type="button" id="startButton">
-                Start
-            </button>
-            <button type="button" id="stopButton" disabled>
-                Stop
-            </button>
         </div>
     );
 }
