@@ -5,15 +5,15 @@ import { useEffect, useRef, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { useAuth } from '../../context/AuthContext';
 import hark from 'hark';
-const Video = (props, { setPin }) => {
+import { VideoContainer, VideoMenu } from './videoGrid.styles';
+const Video = (props) => {
     const ref = useRef(null);
-    console.log('peers');
+    console.log('peersasfasfasfsf', props);
 
     useEffect(() => {
         console.log(props.peer);
         props.peer.on('stream', (stream) => {
             ref.current.srcObject = stream;
-            ref.current.id = stream.id;
             console.log('stream', stream);
             var options = {};
 
@@ -34,28 +34,33 @@ const Video = (props, { setPin }) => {
     return (
         <>
             <video
-                onClick={(e) => setPin(ref.current.id)}
+                onClick={() => props.pinVideo()}
                 style={{ width: '100%', objectFit: 'cover' }}
                 playsInline
                 autoPlay
                 ref={ref}
+                id="video"
             />
-            ;
         </>
     );
 };
 
+const SelfVideo = () => {
+    return <h1>tes</h1>;
+};
 const VideoGrid = ({ userVideo, peers }) => {
     const {}: any = useAuth();
-    const [pin, setPin] = useState('');
+    const [pin, setPin] = useState(false);
+    const videoUsersPin = useRef();
     console.log(pin);
+    console.log(peers);
     useEffect(() => {
         function recalculateLayout() {
             const gallery = document.getElementById('gallery');
             const aspectRatio = 16 / 9;
             const screenWidth = document.body.getBoundingClientRect().width;
             const screenHeight = document.body.getBoundingClientRect().height;
-            const videoCount = document.getElementsByTagName('video').length;
+            const videoCount = pin ? 1 : document.getElementsByTagName('video').length;
 
             // or use this nice lib: https://github.com/fzembow/rect-scaler
             function calculateLayout(
@@ -110,39 +115,105 @@ const VideoGrid = ({ userVideo, peers }) => {
         const debouncedRecalculateLayout = debounce(recalculateLayout, 50);
         window.addEventListener('resize', debouncedRecalculateLayout);
         debouncedRecalculateLayout();
-    }, [peers]);
+    }, [pin, peers]);
+
+    useEffect(() => {
+        const video = document.getElementById('video');
+        const getVideoPin = document.getElementById('pin');
+        const userVideo = document.getElementById('userVideo');
+        const videoGroup = document.getElementById('videoGroup');
+        const gallery = document.getElementById('gallery');
+        const roomContainer = document.getElementById('roomContainer');
+        const videoMenu = document.getElementById('videoMenu');
+
+        if (videoGroup) {
+            videoGroup.addEventListener('mouseover', function () {
+                videoMenu.style.display = 'block';
+            });
+            videoGroup.addEventListener('mouseleave', function () {
+                videoMenu.style.display = 'none';
+            });
+        }
+        const videoUnpin = [];
+
+        if (pin) {
+            userVideo.style.display = 'none';
+            gallery.style.alignItems = 'flex-start';
+            gallery.style.justifyContent = 'center';
+            if (videoGroup) {
+                videoGroup.style.display = 'none';
+            }
+        } else {
+            if (videoGroup) {
+                videoGroup.style.display = 'inline';
+            }
+            userVideo.style.display = 'inline';
+        }
+    }, [pin]);
+
+    const pinVideo = () => {
+        videoUsersPin.current.id = 'pin';
+        setPin(true);
+    };
+    const unpin = () => {
+        videoUsersPin.current.id = 'videoGroup';
+        setPin(false);
+    };
+
     return (
-        <div id="gallery">
-            <div className="video-container">
-                <video style={{ width: '100%', objectFit: 'cover' }} muted ref={userVideo} autoPlay playsInline></video>
-                <div
-                    style={{
-                        position: 'absolute',
-                        background: 'rgba(0,0,0,.8)',
-                        bottom: '0',
-                        left: '2px',
-                        color: '#fff',
-                    }}
-                ></div>
+        <>
+            <div id="gallery">
+                <div className="video-container" id="userVideo">
+                    <video
+                        style={{ width: '100%', objectFit: 'cover' }}
+                        muted
+                        ref={userVideo}
+                        autoPlay
+                        playsInline
+                    ></video>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            background: 'rgba(0,0,0,.8)',
+                            bottom: '0',
+                            left: '2px',
+                            color: '#fff',
+                        }}
+                    ></div>
+                </div>
+
+                {peers.map((peer, index) => {
+                    return (
+                        <>
+                            <div className="video-container" ref={videoUsersPin} id="videoGroup">
+                                {peer ? (
+                                    <Video pinVideo={pinVideo} setPin={setPin} key={index} peer={peer} />
+                                ) : (
+                                    'Loading ...'
+                                )}
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        background: 'rgba(0,0,0,.8)',
+                                        top: '50%',
+                                        left: '50%',
+                                        right: 'auto',
+                                        bottom: 'auto',
+                                        color: '#fff',
+                                        textAlign: 'center',
+                                        display: 'none',
+                                    }}
+                                    id="videoMenu"
+                                    onClick={() => unpin()}
+                                >
+                                    unpin
+                                </div>
+                            </div>
+                        </>
+                    );
+                })}
             </div>
-            {peers.map((peer, index) => {
-                return (
-                    <div className="video-container">
-                        {peer ? <Video setPin={setPin} key={index} peer={peer} /> : 'Loading ...'}
-                        <div
-                            style={{
-                                position: 'absolute',
-                                background: 'rgba(0,0,0,.8)',
-                                bottom: '0',
-                                left: '2px',
-                                color: '#fff',
-                            }}
-                        ></div>
-                    </div>
-                );
-            })}{' '}
-            : ''
-        </div>
+        </>
     );
 };
 

@@ -16,11 +16,25 @@ body {
     max-width: calc(var(--width) * var(--cols));
     align-items: center;
   }
+  .galleryPin {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 100%;
+    align-items: center;
+  }
   
   .video-container {
     width: var(--width);
     height: var(--height);
     position: relative;
+  }
+
+  #pin {
+    width: 80vw !important;
+    height: 80vh !important;
+    position: relative;
+
   }
   
   video {

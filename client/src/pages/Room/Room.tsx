@@ -25,7 +25,7 @@ const ringtoneSound = new Howl({
 
 const Room: React.FC = ({ match, location }: any) => {
     const { messages, setMessages } = useMessage();
-    const { users } = useAuth();
+    const { users, pin } = useAuth();
 
     const [stream, setStream] = useState({});
     const userVideo = useRef(null);
@@ -162,7 +162,7 @@ const Room: React.FC = ({ match, location }: any) => {
                 pauseOnHover
             />
 
-            <RoomContainer>
+            <RoomContainer id="roomContainer">
                 <RoomChatAndUsers>
                     <RoomChatAndUsersItems onClick={() => setUserMenu(!menuUser)}>
                         <i className="text-2xl text-white fas fa-users"></i>

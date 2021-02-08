@@ -9,6 +9,7 @@ export function AuthProvider({ children }: any) {
     const [currentUser, setCurrentUser]: any = useState('');
     const [users, setUsers] = useState({});
     const [loading, setLoading] = useState(true);
+    const [pin, setPin] = useState(false);
 
     function signUp(email: any, password: any) {
         return auth.createUserWithEmailAndPassword(email, password);
@@ -47,6 +48,8 @@ export function AuthProvider({ children }: any) {
         GoogleAuth,
         users,
         setUsers,
+        pin,
+        setPin,
     };
 
     return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
