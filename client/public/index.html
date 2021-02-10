@@ -25,6 +25,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css
 integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
 crossOrigin="anonymous"
 />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&display=swap" rel="stylesheet">
+
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -50,6 +52,20 @@ crossOrigin="anonymous"
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
 
- 
+    <script>
+      window.onload = function() {
+         let xhr = new XMLHttpRequest();
+         xhr.onreadystatechange = function($evt){
+            if(xhr.readyState == 4 && xhr.status == 200){
+                let res = JSON.parse(xhr.responseText);
+                console.log("response: ",res);
+            }
+         }
+         xhr.open("PUT", "https://global.xirsys.net/_turn/testserver", true);
+         xhr.setRequestHeader ("Authorization :" + "Basic " + btoa("tegar:08219742-6aa0-11eb-be59-0242ac150002") );
+         xhr.setRequestHeader ("Content-Type : "+ "application/json");
+         xhr.send( JSON.stringify({"format": "urls"}) );
+      }
+  </script>
   </body>
 </html>

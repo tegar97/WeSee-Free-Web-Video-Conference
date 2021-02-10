@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { FullScreen } from 'react-full-screen';
 
 export const VideoContainer = styled.div`
     width: var(--width);
@@ -14,4 +15,10 @@ export const VideoMenu = styled.div`
     bottom: 'auto';
     color: '#fff';
     text-align: 'center';
+`;
+
+export const FullScreenContainer = styled(FullScreen)`
+    width: var(--width);
+    height: var(--height);
+    position: relative;
 `;

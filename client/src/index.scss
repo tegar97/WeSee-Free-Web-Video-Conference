@@ -28,6 +28,11 @@ body {
     width: var(--width);
     height: var(--height);
     position: relative;
+    
+  }
+
+  .video-container:hover > div{
+    display: block !important
   }
 
   #pin {

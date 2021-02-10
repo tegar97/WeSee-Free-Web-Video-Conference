@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { useAuth } from '../../context/AuthContext';
 import hark from 'hark';
-import { VideoContainer, VideoMenu } from './videoGrid.styles';
+import { FullScreenContainer, VideoContainer, VideoMenu } from './videoGrid.styles';
+import { FullScreen } from 'react-full-screen';
 const Video = (props) => {
     const ref = useRef(null);
     console.log('peersasfasfasfsf', props);
@@ -48,7 +49,7 @@ const Video = (props) => {
 const SelfVideo = () => {
     return <h1>tes</h1>;
 };
-const VideoGrid = ({ userVideo, peers }) => {
+const VideoGrid = ({ userVideo, peers, users, handleShareScreen }) => {
     const {}: any = useAuth();
     const [pin, setPin] = useState(false);
     const videoUsersPin = useRef();
@@ -62,7 +63,6 @@ const VideoGrid = ({ userVideo, peers }) => {
             const screenHeight = document.body.getBoundingClientRect().height;
             const videoCount = pin ? 1 : document.getElementsByTagName('video').length;
 
-            // or use this nice lib: https://github.com/fzembow/rect-scaler
             function calculateLayout(
                 containerWidth: number,
                 containerHeight: number,
@@ -77,7 +77,7 @@ const VideoGrid = ({ userVideo, peers }) => {
                     height: 0,
                 };
 
-                // brute-force search layout where video occupy the largest area of the container
+ 
                 for (let cols = 1; cols <= videoCount; cols++) {
                     const rows = Math.ceil(videoCount / cols);
                     const hScale = containerWidth / (cols * aspectRatio);
@@ -126,30 +126,23 @@ const VideoGrid = ({ userVideo, peers }) => {
         const roomContainer = document.getElementById('roomContainer');
         const videoMenu = document.getElementById('videoMenu');
 
-        if (videoGroup) {
-            videoGroup.addEventListener('mouseover', function () {
-                videoMenu.style.display = 'block';
-            });
-            videoGroup.addEventListener('mouseleave', function () {
-                videoMenu.style.display = 'none';
-            });
-        }
         const videoUnpin = [];
 
         if (pin) {
             userVideo.style.display = 'none';
             gallery.style.alignItems = 'flex-start';
             gallery.style.justifyContent = 'center';
+
             if (videoGroup) {
                 videoGroup.style.display = 'none';
             }
         } else {
             if (videoGroup) {
-                videoGroup.style.display = 'inline';
+                videoGroup.style.display = 'block';
             }
-            userVideo.style.display = 'inline';
+            userVideo.style.display = 'block';
         }
-    }, [pin]);
+    }, [pin, peers]);
 
     const pinVideo = () => {
         videoUsersPin.current.id = 'pin';
@@ -171,6 +164,7 @@ const VideoGrid = ({ userVideo, peers }) => {
                         autoPlay
                         playsInline
                     ></video>
+
                     <div
                         style={{
                             position: 'absolute',

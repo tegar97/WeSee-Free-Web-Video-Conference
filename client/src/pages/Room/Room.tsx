@@ -32,6 +32,7 @@ const Room: React.FC = ({ match, location }: any) => {
     const peersRef = useRef([]);
     const [peers, setPeers] = useState([]);
     const [peers2, setPeers2] = useState([]);
+    const handleShareScreen = useFullScreenHandle();
     const handle = useFullScreenHandle();
     const [roomMenu, setRoomMenu] = useState(false);
     const [isScreenShare, setIsScreenShare] = useState(false);
@@ -59,6 +60,7 @@ const Room: React.FC = ({ match, location }: any) => {
             });
             socket.on('all users', (users) => {
                 const peers = [];
+
                 users.forEach((userID) => {
                     console.log('users', userID.id);
                     const peer = createPeer(userID, socket.id, stream);
@@ -100,16 +102,7 @@ const Room: React.FC = ({ match, location }: any) => {
             // });
         });
     }, [ENDPOINT]);
-    useEffect(() => {
-        // var options = {};
-        // var speechEvents = hark(, options);
-        // speechEvents.on('speaking', function () {
-        //     console.log('yooo');
-        // });
-        // speechEvents.on('stopped_speaking', function () {
-        //     console.log('stopped_speaking');
-        // console.log('2', peersRef);
-    }, []);
+
     useEffect(() => {
         socket.on('message', (message) => {
             setMessages((messages) => [...messages, message]);
@@ -124,6 +117,20 @@ const Room: React.FC = ({ match, location }: any) => {
             initiator: true,
             trickle: false,
             stream,
+            // config: {
+            //     iceServers: [
+            //         {
+            //             urls: 'stun:numb.viagenie.ca',
+            //             username: 'sultan1640@gmail.com',
+            //             credential: '98376683',
+            //         },
+            //         {
+            //             urls: 'turn:numb.viagenie.ca',
+            //             username: 'sultan1640@gmail.com',
+            //             credential: '98376683',
+            //         },
+            //     ],
+            // },
         });
 
         peer.on('signal', (signal) => {
@@ -137,6 +144,20 @@ const Room: React.FC = ({ match, location }: any) => {
             initiator: false,
             trickle: false,
             stream,
+            // config: {
+            //     iceServers: [
+            //         {
+            //             urls: 'stun:numb.viagenie.ca',
+            //             username: 'sultan1640@gmail.com',
+            //             credential: '98376683',
+            //         },
+            //         {
+            //             urls: 'turn:numb.viagenie.ca',
+            //             username: 'sultan1640@gmail.com',
+            //             credential: '98376683',
+            //         },
+            //     ],
+            // },
         });
 
         peer.on('signal', (signal) => {
@@ -194,6 +215,8 @@ const Room: React.FC = ({ match, location }: any) => {
                         menuUser={menuUser}
                         isScreenShare={isScreenShare}
                         screenShareRef={screenShareRef}
+                        usersData={users}
+                        handleShareScreen={handleShareScreen}
                     />
                     <RoomNavbar
                         isScreenShare={isScreenShare}
@@ -203,6 +226,7 @@ const Room: React.FC = ({ match, location }: any) => {
                         userVideo={userVideo}
                         handle={handle}
                         screenShareRef={screenShareRef}
+                        handleShareScreen={handleShareScreen}
                     />
                 </AudioProvider>
             </RoomContainer>

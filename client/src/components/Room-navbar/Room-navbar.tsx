@@ -3,7 +3,7 @@ import { useAudio } from '../../context/Audio';
 import SettingApp from '../settings/settings';
 import { RoomNavbarContainer, RoomNavbarItems } from './Room-navbar.styles';
 
-function RoomNavbar({ stream, peers, handle, userVideo }: any) {
+function RoomNavbar({ stream, peers, handle, userVideo, handleShareScreen }: any) {
     const [videoMuted, setVideoMuted] = useState(false);
     const [isFullscreen, setIsFullScreen] = useState(false);
     const { audioMuted, setAudioMuted }: any = useAudio();
@@ -52,6 +52,7 @@ function RoomNavbar({ stream, peers, handle, userVideo }: any) {
                     screenStream.getVideoTracks()[0],
                     stream,
                 );
+                handleShareScreen.enter();
                 userVideo.current.srcObject = screenStream;
             }
             screenStream.getTracks()[0].onended = () => {
@@ -63,6 +64,8 @@ function RoomNavbar({ stream, peers, handle, userVideo }: any) {
                         stream.getVideoTracks()[0],
                         stream,
                     );
+                    handleShareScreen.exit();
+
                     userVideo.current.srcObject = stream;
                 }
             };

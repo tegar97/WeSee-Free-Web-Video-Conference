@@ -7,13 +7,16 @@ import RoomMenu from '../RoomMenu/RoomMenu';
 import Users from '../users/UsersList';
 import VideoGrid from '../videoGrid/videoGrid';
 import { RoomVideoContainer } from './RoomVideo.styles';
-const RoomVideo = ({ userVideo, peers, stream, roomMenu, setRoomMenu, menuUser, setUserMenu }) => {
+const RoomVideo = ({ userVideo, peers, stream, roomMenu, setRoomMenu, menuUser, setUserMenu, handleShareScreen }) => {
     const { users, setUsers } = useAuth();
     useEffect(() => {
         socket.on('roomData', ({ users }) => {
             setUsers(users);
         });
     }, []);
+
+    console.log('users', users);
+    console.log('peerss', peers);
     return (
         <RoomVideoContainer>
             {roomMenu ? (
@@ -33,7 +36,7 @@ const RoomVideo = ({ userVideo, peers, stream, roomMenu, setRoomMenu, menuUser, 
                 ''
             )}
 
-            <VideoGrid userVideo={userVideo} peers={peers} />
+            <VideoGrid users={users} userVideo={userVideo} peers={peers} handleShareScreen={handleShareScreen} />
         </RoomVideoContainer>
     );
 };

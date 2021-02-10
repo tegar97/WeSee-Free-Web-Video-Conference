@@ -41,10 +41,10 @@ io.on('connection',(socket) =>{
 
         socketToRoom[socket.id] = room;
         const usersInThisRoom = usersId[room].filter(id => id !== socket.id);
-    
-        
+         
+        console.log('users in room',usersInThisRoom)
    
- 
+        
         socket.emit("all users", usersInThisRoom);
 
 
