@@ -1,4 +1,6 @@
-import styled from 'styled-components';
+//@ts-nocheck
+
+import styled,{keyframes} from 'styled-components';
 
 export const SectionFeatureContainer = styled.section`
     background-color: #000;
@@ -83,17 +85,137 @@ export const FeatureItemTextPrimary = styled.p`
 
     color: #7D7D7D;
     margin-top: .5rem;
+    transition : .8s all
 `
 
 export const FeatureItem = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    transition : 1s all;
+    cursor: pointer;
+    &:hover{
+        transform: skewY(3deg) skewX(2deg) scale(1);
+
+    }
+
+    &:hover  i {
+        color: #0E78F9;
+        transform: scale(1.2)
+    }
+    &:hover p {
+        color: #0E78F9;
+    
+    }
 `
+
 
 export const FeatureIcon = styled.i`
     color: #fff;
     font-size: 3.5rem;
     filter: drop-shadow(0px 10px 50px #0E78F9);
+    transition: 1s all;
+    
 
+`
+
+const LineAnimation = keyframes`
+    0%   {border: 2px solid #0E78F9;opacity: 20%}
+  25%  {border: 2px solid #0E78F9;opacity: 40%}
+  50%  {border: 2px solid #0E78F9;opacity: 60%}
+  100% {border: 2px solid #0E78F9;opacity: 100%}
+ 
+  @-webkit-keyframes LineAnimation {
+    0%   {border: 2px solid #0E78F9}
+  25%  {border: 2px solid #0E78F9}
+  50%  {border: 2px solid #0E78F9}
+  100% {border: 2px solid #0E78F9}
+`;
+export const LineContainer = styled.div`
+    position: absolute;
+    /* box-shadow: 5px 5px 10px #0E78F9; */
+    animation: ${LineAnimation} 1.5s  ;
+
+
+
+
+  
+
+`
+
+export const LineContainerVertical = styled.div`
+    position: absolute;
+    /* box-shadow: 5px 5px 10px #0E78F9; */
+    animation: ${LineAnimation}  1.5s ;
+    border-left: 2px solid #0E78F9;
+    height: ${props => props.height};
+    z-index: 100;
+    right:   ${props => props.right}; ;
+    top:  ${props => props.top};
+    left:   ${props => props.left}; ;
+
+   transform: rotate(${props => props.rotate});
+
+
+
+
+  
+
+`
+export const LineContainerHorizontal = styled.div`
+    position: absolute;
+    /* box-shadow: 5px 5px 10px #0E78F9; */
+    animation: ${LineAnimation}  2s ;
+    width: ${props => props.width};;
+    border: 1px solid #0E78F9;
+    right:   ${props => props.right}; ;
+    left:   ${props => props.left}; ;
+    top:  ${props => props.top};
+  
+    @media (max-width: 1302px) {
+        border: 1px solid red;
+        
+    }
+
+
+
+  
+
+`
+const bounce = keyframes`
+    from {
+      transform: translateY(0px);
+      
+    }
+    to {
+      transform: translateY(-8px);
+      filter: drop-shadow(0px 5px 40px #0E78F9)
+    }
+  }
+  @-webkit-keyframes bounce {
+    from {
+      transform: translateY(0px);
+    }
+    to {
+      transform: translateY(-15px);
+      filter: drop-shadow(0px 5px 40px #0E78F9)
+
+    }
+`;
+export const RoomPhoto = styled.img`
+    animation: ${bounce} 1.5s infinite alternate;
+    cursor: pointer;
+    /* transition: 1s all !important;
+
+    &:hover{
+        filter: drop-shadow(0px 5px 140px #0E78F9) !important;
+
+    } */
+    
+`
+
+export const FeatureImage = styled.div`
+    display: flex;
+    align-self: center;
 `
