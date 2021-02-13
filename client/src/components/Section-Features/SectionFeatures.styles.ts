@@ -6,11 +6,24 @@ export const SectionFeatureContainer = styled.section`
     background-color: #000;
     
     width: 100%;
-    clip-path: polygon(0 0, 100% 14%, 100% 100%, 0 82%);
-    height: 140rem;
+    clip-path: polygon(0 0, 100% 9%, 100% 100%, 0% 100%);
+    height: 200rem;
     padding: 5rem 2rem;
-    margin-top: -20rem;
-    position: relative
+    margin-top: -29rem;
+    position: relative;
+    
+    
+    @media only screen and (max-width: 768px) {
+        clip-path: none;
+        margin-top: -4rem;
+        padding: 2rem 2rem;
+        
+        clip-path: polygon(0 0, 100% 2%, 100% 100%, 0% 100%);
+
+
+        
+
+    }
 
 `;
 
@@ -31,6 +44,12 @@ export const FeatureText = styled.h1`
         text-shadow: 0px 20px 50px #0E78F9;
 
     }
+    @media only screen and (max-width: 768px) {
+        font-size: 2rem;
+        line-height: 1.7;
+
+
+    }
 `
 
 export const FeatureContainer = styled.div`
@@ -38,10 +57,17 @@ export const FeatureContainer = styled.div`
     grid-template-columns: repeat(3, minmax(0, 1fr));
     text-align: center;
     margin-top: 10rem/* 160px */;
-    width: '100%' !important;
-    height: ' 100%' !important ; 
-    max-height: '630px' !important ;
+    width: 100% !important;
+    height:  100% !important ; 
+    max-height: 630px !important ;
     color: #fff;
+    @media only screen and (max-width: 768px) {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        margin-top: 0/* 160px */;
+
+    }
+    
+
 
 `
 export const FeatureScrollBar  = styled.div`
@@ -64,18 +90,23 @@ export const FeatureItemText = styled.div`
     display: flex;
     flex-direction: column;
     text-align: left;
-    
+    @media only screen and (max-width: 768px) {
+        text-align: center;
+        margin-top: 1rem;
+
+
+    }
 
 `
 
 export const FeatureItemTextMain = styled.p`
-    font-size: 2rem;
+    font-size: 22px;
     font-style: normal;
     font-weight: bold;
-    font-size: 22px;
     line-height: 27px;
     color: rgba(14, 120, 249, 0.96);
-    text-shadow: 0px 4px 50px #0E78F9
+    text-shadow: 0px 4px 50px #0E78F9;
+   
 `
 
 export const FeatureItemTextPrimary = styled.p`
@@ -95,6 +126,7 @@ export const FeatureItem = styled.div`
     position: relative;
     transition : 1s all;
     cursor: pointer;
+    
     &:hover{
         transform: skewY(3deg) skewX(2deg) scale(1);
 
@@ -107,6 +139,13 @@ export const FeatureItem = styled.div`
     &:hover p {
         color: #0E78F9;
     
+    }
+
+    @media only screen and (max-width: 768px) {
+          margin-top: 2rem;
+        flex-direction: column;
+        padding: 1rem 0;
+
     }
 `
 
@@ -156,6 +195,10 @@ export const LineContainerVertical = styled.div`
     left:   ${props => props.left}; ;
 
    transform: rotate(${props => props.rotate});
+   @media only screen and (max-width: 1200px) {
+        display: none;
+
+    }
 
 
 
@@ -172,11 +215,11 @@ export const LineContainerHorizontal = styled.div`
     right:   ${props => props.right}; ;
     left:   ${props => props.left}; ;
     top:  ${props => props.top};
-  
-    @media (max-width: 1302px) {
-        border: 1px solid red;
-        
+    @media only screen and (max-width: 1200px) {
+        display: none;
+
     }
+
 
 
 
@@ -218,4 +261,21 @@ export const RoomPhoto = styled.img`
 export const FeatureImage = styled.div`
     display: flex;
     align-self: center;
+    @media only screen and (max-width: 768px) {
+          grid-row: 1 / 2;
+        margin-top: 4rem;
+        width: 90%;
+        justify-self: center;
+
+    }
 `
+
+export const MarginContainer = styled.div`
+    margin-top: 55rem;
+    @media only screen and (max-width: 768px) {
+        margin-top: 4rem;
+
+    }
+`
+
+

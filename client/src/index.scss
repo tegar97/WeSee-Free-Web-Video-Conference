@@ -46,3 +46,21 @@ body {
     height: 100%;
     width: 100%;
   }
+  .slick-slide {
+    padding: 0 8px;
+    box-sizing: border-box;
+}
+.slider-arrow {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  background-color: none;
+}
+
+.arrow-btn {
+  top: 45%;
+}
+.next {
+  float: right;
+}

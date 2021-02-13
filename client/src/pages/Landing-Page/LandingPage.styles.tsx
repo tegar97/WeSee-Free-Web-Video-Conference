@@ -29,3 +29,13 @@ export const ImageShowContainer = styled.div`
     position: absolute;
     animation: ${bounce} 1.5s infinite alternate;
 `;
+
+export const SectionAboutService = styled.section`
+    background-color: #000;
+
+    width: 100%;
+    clip-path: polygon(0 0, 100% 14%, 100% 100%, 0 82%);
+    height: 140rem;
+    padding: 5rem 2rem;
+    margin-top: -20rem;
+`;

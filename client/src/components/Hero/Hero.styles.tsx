@@ -33,6 +33,9 @@ export const HeroButton = styled.button`
 export const HeroImageContainer = styled.div`
     width: 100%;
     padding: 0;
+
+    @media only screen and (max-width: 1224px) {
+    }
 `;
 
 export const RoomCodeInput = styled.input`
@@ -45,6 +48,9 @@ export const RoomCodeInput = styled.input`
     transition: 0.5s all;
     &:focus {
         border: 1px solid rgba(14, 120, 249, 1);
+    }
+    @media only screen and (max-width: 768px) {
+        width: 200px;
     }
 `;
 
@@ -62,7 +68,9 @@ export const HeroContainer = styled.section`
     background-color: #191b28;
     color: #fff;
     @media only screen and (max-width: 1224px) {
-        grid-template-columns: 1fr;
-        height: 140vh;
+        display: flex;
+        flex-direction: column;
+
+        height: 60rem;
     }
 `;
