@@ -61,7 +61,7 @@ export const KeyboardInput = styled.i`
 `;
 
 export const HeroContainer = styled.section`
-    height: 175vh;
+    height: 80rem;
     width: 100%;
     display: grid;
     grid-template-columns: 1.2fr 1fr;
