@@ -25,7 +25,36 @@ export const NavbarListContainer = styled.ul`
     padding: 1rem;
     width: 100%;
 `;
+export const NavbarDropDown = styled.div`
+    display: none;
+    position: absolute;
+    background-color: #0e78f9;
 
+    min-width: 80%;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    padding: 0;
+    right: 0;
+    span {
+        color: #fff;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+`;
+
+export const UserName = styled.li`
+    display: flex;
+    list-style: none;
+    margin-left: 1rem;
+    cursor: pointer;
+    transition: 1s all;
+    background-color: #0e78f9;
+    padding: 0.2rem;
+    &:hover ~ ${NavbarDropDown} {
+        display: block;
+    }
+`;
 export const NavbarList = styled.li`
     display: flex;
     list-style: none;

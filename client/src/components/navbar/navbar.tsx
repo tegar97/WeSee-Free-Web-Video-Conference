@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { HeroButton } from '../Hero/Hero.styles';
-import { NavbarContainer, NavbarListContainer, NavbarList, HamburgerMenu, SidePanel, CloseBtn } from './Navbar.styles';
+import {
+    NavbarContainer,
+    NavbarListContainer,
+    NavbarList,
+    HamburgerMenu,
+    SidePanel,
+    CloseBtn,
+    UserName,
+} from './Navbar.styles';
 import { Link } from 'react-scroll';
+import { Link as Href } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import { useAuth } from '../../context/AuthContext';
 
 function Navbar() {
     const [active, seteActive] = useState(false);
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
     const [NavMobileActive, setNavMobileActive] = useState(false);
+    const { currentUser, logout }: any = useAuth();
     console.log(NavMobileActive);
     useEffect(() => {
         window.addEventListener('scroll', changeBackground);
@@ -49,10 +60,21 @@ function Navbar() {
                             width: '100%',
                         }}
                     >
-                        <NavbarList>Login</NavbarList>
-                        <NavbarList>
-                            <HeroButton style={{ width: '95px', height: '42px' }}>SignUp</HeroButton>
-                        </NavbarList>
+                        {currentUser ? (
+                            <div className="relative flex items-center">
+                                <NavbarList onClick={() => logout()}>Logout</NavbarList>
+                                <UserName>{currentUser.displayName} </UserName>
+                            </div>
+                        ) : (
+                            <>
+                                <Href to="/signin">
+                                    <NavbarList>Login</NavbarList>
+                                </Href>
+                                <NavbarList>
+                                    <HeroButton style={{ width: '95px', height: '42px' }}>SignUp</HeroButton>
+                                </NavbarList>
+                            </>
+                        )}
                     </div>
                 </NavbarListContainer>
             ) : (

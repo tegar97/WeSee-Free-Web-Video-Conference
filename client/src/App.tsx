@@ -7,9 +7,9 @@ import Dasboard from './pages/Dasboard/Dasboard';
 import LandingPage from './pages/Landing-Page/LandingPage';
 import Login from './pages/Login/Login';
 import Prepare from './pages/preparePages/prepare';
-import Register from './pages/Register/Register';
 import Room from './pages/Room/Room';
-import Test from './pages/test/Test';
+import SignUp from './pages/signup/SignUp';
+import PrivateRoute from './private-route/PrivateRoute';
 
 const App: React.FC = () => {
     return (
@@ -20,12 +20,11 @@ const App: React.FC = () => {
                 <Switch>
                     <Route exact path="/" component={LandingPage} />
                     <Route exact path="/dasboard" component={Dasboard} />
-                    <Route exact path="/login" component={Login} />
-                    <Route exact path="/signup" component={Register} />
+                    <Route exact path="/signin" component={Login} />
+                    <Route exact path="/signup" component={SignUp} />
                     <Route exact path="/prepare" component={Prepare} />
-                    <Route exact path="/test" component={Test} />
                     <MessageProvider>
-                        <Route exact path="/room/:id" component={Room} />
+                        <PrivateRoute exact path="/room/:id" component={Room} />
                     </MessageProvider>
                 </Switch>
             </Router>
