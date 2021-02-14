@@ -3,6 +3,7 @@ import { FeatureText } from '../Section-Features/SectionFeatures.styles';
 import Slider from 'react-slick';
 import { LogoArea, LogoContainer, LogoImage, PartnerSection } from './Partner.styles';
 import { SampleNextArrow, SamplePrevArrow } from './Arrow-carousel';
+import ScrollAnimation from 'react-animate-on-scroll';
 
 function Partner() {
     var settings = {
@@ -45,29 +46,31 @@ function Partner() {
         ],
     };
     return (
-        <PartnerSection>
-            <FeatureText>OUR BEST PARTNER</FeatureText>
-            <LogoArea style={{ color: '#fff' }}>
-                <Slider {...settings}>
-                    <LogoContainer>
-                        <LogoImage src="/logo1.png" alt="dummy logo" />
-                    </LogoContainer>
+        <ScrollAnimation animateIn="fadeIn">
+            <PartnerSection>
+                <FeatureText>OUR BEST PARTNER</FeatureText>
+                <LogoArea style={{ color: '#fff' }}>
+                    <Slider {...settings}>
+                        <LogoContainer>
+                            <LogoImage src="/logo1.png" alt="dummy logo" />
+                        </LogoContainer>
 
-                    <LogoContainer>
-                        <LogoImage src="/logo1.png" alt="dummy logo" />
-                    </LogoContainer>
-                    <LogoContainer>
-                        <LogoImage src="/logo1.png" alt="dummy logo" />
-                    </LogoContainer>
-                    <LogoContainer>
-                        <LogoImage src="/logo1.png" alt="dummy logo" />
-                    </LogoContainer>
-                    <LogoContainer>
-                        <LogoImage src="/logo1.png" alt="dummy logo" />
-                    </LogoContainer>
-                </Slider>
-            </LogoArea>
-        </PartnerSection>
+                        <LogoContainer>
+                            <LogoImage src="/logo1.png" alt="dummy logo" />
+                        </LogoContainer>
+                        <LogoContainer>
+                            <LogoImage src="/logo1.png" alt="dummy logo" />
+                        </LogoContainer>
+                        <LogoContainer>
+                            <LogoImage src="/logo1.png" alt="dummy logo" />
+                        </LogoContainer>
+                        <LogoContainer>
+                            <LogoImage src="/logo1.png" alt="dummy logo" />
+                        </LogoContainer>
+                    </Slider>
+                </LogoArea>
+            </PartnerSection>
+        </ScrollAnimation>
     );
 }
 

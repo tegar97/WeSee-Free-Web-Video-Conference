@@ -17,7 +17,8 @@ export const SectionFeatureContainer = styled.section`
         clip-path: none;
         margin-top: -4rem;
         padding: 2rem 2rem;
-        
+        height: 160rem;
+
         clip-path: polygon(0 0, 100% 2%, 100% 100%, 0% 100%);
 
 

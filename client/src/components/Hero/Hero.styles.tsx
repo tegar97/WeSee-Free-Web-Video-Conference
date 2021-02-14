@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const HeroHeader = styled.div`
     padding: 3rem;
-    margin-top: 5rem;
+    margin-top: 6.6rem;
 `;
 
 export const HeroHeaderMainText = styled.h1`
