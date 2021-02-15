@@ -1,10 +1,13 @@
 const express = require('express')
 const socketIo = require('socket.io')
+
 const http = require('http');
 const cors = require('cors');
 const { addUser ,removeUser,getUser,getUsersinRoom} = require('./users');
 const app = express();
 const server = http.createServer(app);
+require('dotenv').config()
+
 const io = socketIo(server,{
     cors:{
         origin: '*',
@@ -99,6 +102,7 @@ io.on('connection',(socket) =>{
 app.get('/',(req,res) => {
     res.send('<h1>Hello World</h1>')
 })
+
 app.use(cors())
 
 const PORT = process.env.PORT || 5000 

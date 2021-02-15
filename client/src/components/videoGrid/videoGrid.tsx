@@ -7,6 +7,8 @@ import { useAuth } from '../../context/AuthContext';
 import hark from 'hark';
 import { FullScreenContainer, VideoContainer, VideoMenu } from './videoGrid.styles';
 import { FullScreen } from 'react-full-screen';
+import { useMediaQuery } from 'react-responsive';
+
 const Video = (props) => {
     const ref = useRef(null);
     console.log('peersasfasfasfsf', props);
@@ -53,6 +55,8 @@ const VideoGrid = ({ userVideo, peers, users, handleShareScreen }) => {
     const {}: any = useAuth();
     const [pin, setPin] = useState(false);
     const videoUsersPin = useRef();
+    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
+
     console.log(pin);
     console.log(peers);
     useEffect(() => {
@@ -77,7 +81,6 @@ const VideoGrid = ({ userVideo, peers, users, handleShareScreen }) => {
                     height: 0,
                 };
 
- 
                 for (let cols = 1; cols <= videoCount; cols++) {
                     const rows = Math.ceil(videoCount / cols);
                     const hScale = containerWidth / (cols * aspectRatio);
@@ -155,7 +158,7 @@ const VideoGrid = ({ userVideo, peers, users, handleShareScreen }) => {
 
     return (
         <>
-            <div id="gallery">
+            <div id="gallery" style={{ justifyContent: isTabletOrMobile && users > 2 ? 'flex-start' : 'center' }}>
                 <div className="video-container" id="userVideo">
                     <video
                         style={{ width: '100%', objectFit: 'cover' }}
@@ -199,9 +202,7 @@ const VideoGrid = ({ userVideo, peers, users, handleShareScreen }) => {
                                     }}
                                     id="videoMenu"
                                     onClick={() => unpin()}
-                                >
-                                    unpin
-                                </div>
+                                ></div>
                             </div>
                         </>
                     );

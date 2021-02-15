@@ -18,12 +18,14 @@ import { useMessage } from '../../context/chatMessage';
 import { Howl } from 'howler';
 import ringtone from './../../sounds/enterRoom.mp3';
 import hark from 'hark';
+import firebase from '../../firebase';
+
 const ringtoneSound = new Howl({
     src: [ringtone],
     loop: false,
 });
 
-const Room: React.FC = ({ match, location }: any) => {
+const Room: React.FC = ({ history, match, location }: any) => {
     const { messages, setMessages } = useMessage();
     const { users, pin } = useAuth();
 
@@ -38,11 +40,36 @@ const Room: React.FC = ({ match, location }: any) => {
     const [isScreenShare, setIsScreenShare] = useState(false);
     const screenShareRef = useRef(null);
     const [menuUser, setUserMenu] = useState(false);
-
+    const [isValid, setIsValid] = useState(true);
     let [systemMessage, setSystemMessage] = useState({});
+    const [RoomCode, setRoomCode] = useState();
     const { currentUser } = useAuth();
     const name = currentUser.displayName;
     const room = match.params.id;
+    const db = firebase.firestore();
+
+    useEffect(() => {
+        const getData = async () => {
+            const usersCollection = db.collection('room');
+            const isValid = await usersCollection.where('roomId', '==', room).get();
+            const res = await usersCollection
+                .where('roomId', '==', room)
+                .get()
+                .then(function (querySnapshot) {
+                    querySnapshot.forEach(function (doc) {
+                        setRoomCode(doc.data().code);
+                    });
+                });
+
+            console.log('res', res);
+            if (isValid.empty) {
+                setIsValid(false);
+            } else {
+                setIsValid(true);
+            }
+        };
+        getData();
+    }, []);
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
@@ -69,9 +96,11 @@ const Room: React.FC = ({ match, location }: any) => {
                         peer,
                     });
                     peers.push(peer);
+                    console.log('peer on join', peers);
                 });
                 setPeers(peers);
             });
+
             socket.on('user joined', (payload) => {
                 const peer = addPeer(payload.signal, payload.callerID, stream);
                 peersRef.current.push({
@@ -87,19 +116,19 @@ const Room: React.FC = ({ match, location }: any) => {
                 item.peer.signal(payload.signal);
             });
 
-            // socket.on('user left', (id) => {
-            //     const peerObj = peersRef.current.find((p) => p.peerID === id);
-            //     console.log(peerObj);
-            //     if (peerObj) {
-            //         peerObj.peer.destroy();
-            //     }
+            socket.on('user left', (id) => {
+                const peerObj = peersRef.current.find((p) => p.peerID === id);
+                if (peerObj) {
+                    peerObj.peer.destroy();
+                }
 
-            //     const peers = peersRef.current.filter((p) => p.peerID !== id)
-            //     console.log('afasf', peers);
-            //     peersRef.current = peers;
-            //     setPeers(peers);
-            //     console.log(peers)
-            // });
+                const peers = peersRef.current.filter((p) => p.peerID !== id);
+                console.log('afasf', peers);
+                peersRef.current = peers;
+
+                console.log('peer left', peers);
+                setPeers(peers);
+            });
         });
     }, [ENDPOINT]);
 
@@ -117,20 +146,15 @@ const Room: React.FC = ({ match, location }: any) => {
             initiator: true,
             trickle: false,
             stream,
-            // config: {
-            //     iceServers: [
-            //         {
-            //             urls: 'stun:numb.viagenie.ca',
-            //             username: 'sultan1640@gmail.com',
-            //             credential: '98376683',
-            //         },
-            //         {
-            //             urls: 'turn:numb.viagenie.ca',
-            //             username: 'sultan1640@gmail.com',
-            //             credential: '98376683',
-            //         },
-            //     ],
-            // },
+            config: {
+                iceServers: [
+                    {
+                        urls: 'turn:45.77.247.176:3478',
+                        username: 'tegar',
+                        credential: '123456',
+                    },
+                ],
+            },
         });
 
         peer.on('signal', (signal) => {
@@ -144,20 +168,15 @@ const Room: React.FC = ({ match, location }: any) => {
             initiator: false,
             trickle: false,
             stream,
-            // config: {
-            //     iceServers: [
-            //         {
-            //             urls: 'stun:numb.viagenie.ca',
-            //             username: 'sultan1640@gmail.com',
-            //             credential: '98376683',
-            //         },
-            //         {
-            //             urls: 'turn:numb.viagenie.ca',
-            //             username: 'sultan1640@gmail.com',
-            //             credential: '98376683',
-            //         },
-            //     ],
-            // },
+            config: {
+                iceServers: [
+                    {
+                        urls: 'turn:45.77.247.176:3478',
+                        username: 'tegar',
+                        credential: '123456',
+                    },
+                ],
+            },
         });
 
         peer.on('signal', (signal) => {
@@ -168,69 +187,77 @@ const Room: React.FC = ({ match, location }: any) => {
 
         return peer;
     }
-
     return (
-        <FullScreen handle={handle}>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable={false}
-                pauseOnHover
-            />
-
-            <RoomContainer id="roomContainer">
-                <RoomChatAndUsers>
-                    <RoomChatAndUsersItems onClick={() => setUserMenu(!menuUser)}>
-                        <i className="text-2xl text-white fas fa-users"></i>
-                        <ItemExtends>
-                            <span style={{ fontSize: '.7rem' }}>{users.length}</span>
-                        </ItemExtends>
-                    </RoomChatAndUsersItems>
-                    <RoomChatAndUsersItems
-                        onClick={() => setRoomMenu(!roomMenu)}
-                        style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}
-                    >
-                        <i className="text-2xl text-white fas fa-comment-dots"></i>
-                        <ItemExtends>
-                            <span style={{ fontSize: '.7rem' }}>
-                                {messages.filter((m) => m.user !== 'system').length}
-                            </span>
-                        </ItemExtends>
-                    </RoomChatAndUsersItems>
-                </RoomChatAndUsers>
-
-                <AudioProvider>
-                    <RoomVideo
-                        userVideo={userVideo}
-                        peers={peers}
-                        stream={stream}
-                        roomMenu={roomMenu}
-                        setRoomMenu={setRoomMenu}
-                        setUserMenu={setUserMenu}
-                        menuUser={menuUser}
-                        isScreenShare={isScreenShare}
-                        screenShareRef={screenShareRef}
-                        usersData={users}
-                        handleShareScreen={handleShareScreen}
+        <>
+            {isValid ? (
+                <FullScreen handle={handle}>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={3000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable={false}
+                        pauseOnHover
                     />
-                    <RoomNavbar
-                        isScreenShare={isScreenShare}
-                        setIsScreenShare={setIsScreenShare}
-                        stream={stream}
-                        peers={peersRef}
-                        userVideo={userVideo}
-                        handle={handle}
-                        screenShareRef={screenShareRef}
-                        handleShareScreen={handleShareScreen}
-                    />
-                </AudioProvider>
-            </RoomContainer>
-        </FullScreen>
+
+                    <RoomContainer id="roomContainer">
+                        <RoomChatAndUsers>
+                            <RoomChatAndUsersItems onClick={() => setUserMenu(!menuUser)}>
+                                <i className="text-2xl text-white fas fa-users"></i>
+                                <ItemExtends>
+                                    <span style={{ fontSize: '.7rem' }}>{users.length}</span>
+                                </ItemExtends>
+                            </RoomChatAndUsersItems>
+
+                            <RoomChatAndUsersItems
+                                onClick={() => setRoomMenu(!roomMenu)}
+                                style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}
+                            >
+                                <i className="text-2xl text-white fas fa-comment-dots"></i>
+                                <ItemExtends>
+                                    <span style={{ fontSize: '.7rem' }}>
+                                        {messages.filter((m) => m.user !== 'system').length}
+                                    </span>
+                                </ItemExtends>
+                            </RoomChatAndUsersItems>
+                        </RoomChatAndUsers>
+
+                        <AudioProvider>
+                            <RoomVideo
+                                userVideo={userVideo}
+                                peers={peers}
+                                stream={stream}
+                                roomMenu={roomMenu}
+                                setRoomMenu={setRoomMenu}
+                                setUserMenu={setUserMenu}
+                                menuUser={menuUser}
+                                isScreenShare={isScreenShare}
+                                screenShareRef={screenShareRef}
+                                usersData={users}
+                                handleShareScreen={handleShareScreen}
+                            />
+                            <RoomNavbar
+                                isScreenShare={isScreenShare}
+                                setIsScreenShare={setIsScreenShare}
+                                stream={stream}
+                                peers={peersRef}
+                                userVideo={userVideo}
+                                handle={handle}
+                                history={history}
+                                screenShareRef={screenShareRef}
+                                RoomCode={RoomCode}
+                                handleShareScreen={handleShareScreen}
+                            />
+                        </AudioProvider>
+                    </RoomContainer>
+                </FullScreen>
+            ) : (
+                <h1>Code is invalid</h1>
+            )}
+        </>
     );
 };
 

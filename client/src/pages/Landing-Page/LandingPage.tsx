@@ -12,8 +12,9 @@ import { TweenLite } from 'gsap';
 import { useEffect } from 'react';
 import ScrollAnimation from 'react-animate-on-scroll';
 
-const LandingPage = () => {
+const LandingPage = ({ history }) => {
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
+
     useEffect(() => {
         const ui = document.getElementById('ui');
 
@@ -30,7 +31,7 @@ const LandingPage = () => {
             <LandingPageContainer>
                 <Navbar />
 
-                <Hero />
+                <Hero history={history} />
                 {!isTabletOrMobile && (
                     <div className="relative flex justify-center ">
                         <Tween

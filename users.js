@@ -1,5 +1,8 @@
 const users = [];
-const addUser = ({id , name,room}) => {
+const firebase = require('./firebase')
+const db = firebase.firestore();
+
+const addUser =  ({id , name,room}) => {
     name = name.trim().toLowerCase();
 
     const existingUsers = users.find(user => user.room  & users.name ===name)
@@ -9,8 +12,14 @@ const addUser = ({id , name,room}) => {
 
 
     const user = {id,name,room}
-
+    
     users.push(user);
+    // try {
+    //      db.collection('room').doc(`${room}`).add({users})
+
+    // } catch (error) {
+    //     console.log(error)
+    // }
     return {user}
 }
 

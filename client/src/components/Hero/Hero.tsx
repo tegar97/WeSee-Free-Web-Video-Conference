@@ -11,10 +11,51 @@ import {
 } from './Hero.styles';
 import { useMediaQuery } from 'react-responsive';
 import { Reveal, SplitWords, Tween } from 'react-gsap';
+import { useAuth } from '../../context/AuthContext';
+import { v4 as uuidv4 } from 'uuid';
+import firebase from '../../firebase';
 
-function Hero() {
+function Hero({ history }) {
     const [RoomCode, setRoomCode] = useState('');
-    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
+    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1200px)' });
+    const { currentUser }: any = useAuth();
+
+    const db = firebase.firestore();
+
+    function makeid(length) {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+    const joinRoom = async () => {
+        const usersCollection = db.collection('room');
+        usersCollection
+            .where('code', '==', RoomCode)
+            .get()
+            .then(function (querySnapshot) {
+                querySnapshot.forEach(function (doc) {
+                    history.push(`/room/${doc.data().roomId}`);
+                });
+            })
+            .catch(function (error) {
+                console.log('Error getting documents: ', error);
+            });
+    };
+    const createRoom = async () => {
+        const roomId = uuidv4(5);
+        if (currentUser) {
+            await db
+                .collection('room')
+                .add({ roomId: roomId, code: makeid(5), users: [currentUser.displayName] })
+                .then(() => history.push(`/room/${roomId}`));
+        } else {
+            history.push('/signin');
+        }
+    };
 
     return (
         <div>
@@ -36,7 +77,7 @@ function Hero() {
                     {}
                     <Tween from={{ x: '-200px' }} to={{ x: '0' }} duration={2}>
                         <div className="flex mt-5">
-                            <HeroButton>Create Room</HeroButton>
+                            <HeroButton onClick={() => createRoom()}>Create Room</HeroButton>
                             <div className="relative flex items-center ">
                                 <RoomCodeInput
                                     value={RoomCode}
@@ -47,7 +88,13 @@ function Hero() {
                                 <KeyboardInput className="fas fa-keyboard "></KeyboardInput>
 
                                 {RoomCode.length > 3 ? (
-                                    <p style={{ color: '#0e78f9', marginLeft: '1rem' }}>Join Now</p>
+                                    <p
+                                        className="cursor-pointer hover:translate-y-1"
+                                        onClick={() => joinRoom()}
+                                        style={{ color: '#0e78f9', marginLeft: '1rem' }}
+                                    >
+                                        Join Now
+                                    </p>
                                 ) : (
                                     ''
                                 )}

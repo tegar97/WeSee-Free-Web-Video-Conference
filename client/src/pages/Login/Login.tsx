@@ -8,7 +8,7 @@ const Login: React.FC = ({ history }: any) => {
     const passwordRef = useRef<HTMLInputElement>(null!);
     const [error, setError] = useState<String>('');
     const [loading, setLoading] = useState<Boolean>(false);
-    const { login }: any = useAuth();
+    const { login, GoogleAuth, FacebookAuth }: any = useAuth();
     console.log(error);
     async function handleSubmit(e: any) {
         e.preventDefault();
@@ -27,6 +27,22 @@ const Login: React.FC = ({ history }: any) => {
         try {
         } catch (error) {}
     }
+
+    const GoogleLogin = () => {
+        try {
+            GoogleAuth().then(() => {
+                history.push('/');
+            });
+        } catch (error) {}
+    };
+
+    const FaceBookLogin = () => {
+        try {
+            FacebookAuth().then(() => {
+                history.push('/');
+            });
+        } catch (error) {}
+    };
     return (
         <div className="lg:grid lg:grid-cols-2 " style={{ width: '100%', height: '101vh', backgroundColor: '#191b28' }}>
             <div
@@ -42,7 +58,34 @@ const Login: React.FC = ({ history }: any) => {
                 <h2 className="text-3xl font-bold " style={{ color: '#0E78F9' }}>
                     Sign In To Wesee
                 </h2>
-                <div></div>
+                <div className="flex mt-5 ">
+                    <button className="outline-none" onClick={() => GoogleLogin()}>
+                        <div
+                            className="flex items-center justify-center p-3"
+                            style={{
+                                border: '1px solid #0E78F9',
+                                borderRadius: '100%',
+                                width: '50px',
+                                height: '50px',
+                            }}
+                        >
+                            <i className="text-lg text-white fab fa-google" style={{ color: '#0E78F9' }}></i>
+                        </div>
+                    </button>
+                    <button className="ml-4 outline-none" onClick={() => FaceBookLogin()}>
+                        <div
+                            className="flex items-center justify-center p-3"
+                            style={{
+                                border: '1px solid #0E78F9',
+                                borderRadius: '100%',
+                                width: '50px',
+                                height: '50px',
+                            }}
+                        >
+                            <i className="text-lg text-white fab fa-facebook" style={{ color: '#0E78F9' }}></i>
+                        </div>
+                    </button>
+                </div>
                 {error && <span className="mt-5 text-red-300">{error}</span>}
                 <div className="w-full">
                     <form onSubmit={handleSubmit}>

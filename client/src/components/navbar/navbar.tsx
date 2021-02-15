@@ -37,7 +37,6 @@ function Navbar() {
             {!isTabletOrMobile ? (
                 <NavbarListContainer className={`${active ? ' text-white' : ''}`} style={{ transition: '.5s all' }}>
                     <NavbarList>
-                        {' '}
                         <Link activeClass="active" to="about" spy={true} smooth={true} offset={-70} duration={500}>
                             About
                         </Link>
@@ -87,10 +86,36 @@ function Navbar() {
                     <CloseBtn href="javascript:void(0)" className="closebtn" onClick={() => setNavMobileActive(false)}>
                         &times;
                     </CloseBtn>
-                    <a href="#">About</a>
-                    <a href="#">Services</a>
-                    <a href="#">Clients</a>
-                    <a href="#">Contact</a>
+                    <span className="cursor-pointer">
+                        <Link activeClass="active" to="about" spy={true} smooth={true} offset={-70} duration={500}>
+                            About
+                        </Link>
+                    </span>
+                    <span className="cursor-pointer">
+                        <Link activeClass="active" to="feature" spy={true} smooth={true} offset={-70} duration={500}>
+                            Feature
+                        </Link>
+                    </span>
+                    <span className="cursor-pointer">
+                        <Link activeClass="active" to="review" spy={true} smooth={true} offset={-70} duration={500}>
+                            Review
+                        </Link>
+                    </span>
+                    {currentUser ? (
+                        <>
+                            <a onClick={() => logout()}>Logout</a>
+                            <UserName>{currentUser.displayName} </UserName>
+                        </>
+                    ) : (
+                        <>
+                            <span>
+                                <Href to="/signin">Signin</Href>
+                            </span>
+                            <span>
+                                <Href to="/signin">SignUp</Href>
+                            </span>
+                        </>
+                    )}
                 </SidePanel>
             ) : (
                 ''

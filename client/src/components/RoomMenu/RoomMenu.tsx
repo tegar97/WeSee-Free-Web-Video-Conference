@@ -10,6 +10,11 @@ const RoomMenuContainer = styled.div`
     background-color: #1c1f2e;
     position: absolute;
     z-index: 100;
+    @media only screen and (max-width: 768px) {
+        width: 100%;
+        height: 100%;
+        z-index: 10000;
+    }
 `;
 
 const RoomMenuNavbar = styled.div`

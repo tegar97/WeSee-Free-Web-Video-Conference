@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 
-import { auth, googleProvider } from '../firebase';
+import { auth, googleProvider, facebookProvider } from '../firebase';
+
 const AuthContext = React.createContext<null>(null);
 export function useAuth() {
     return useContext(AuthContext);
@@ -29,6 +30,9 @@ export function AuthProvider({ children }: any) {
     function GoogleAuth() {
         return auth.signInWithPopup(googleProvider);
     }
+    function FacebookAuth() {
+        return auth.signInWithPopup(facebookProvider);
+    }
 
     useEffect(() => {
         const unsubcriber = auth.onAuthStateChanged((user: any) => {
@@ -50,6 +54,7 @@ export function AuthProvider({ children }: any) {
         setUsers,
         pin,
         setPin,
+        FacebookAuth,
     };
 
     return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;

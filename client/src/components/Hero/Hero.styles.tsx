@@ -3,6 +3,10 @@ import styled from 'styled-components';
 export const HeroHeader = styled.div`
     padding: 3rem;
     margin-top: 6.6rem;
+
+    @media only screen and (max-width: 768px) {
+        margin-top: 4rem;
+    }
 `;
 
 export const HeroHeaderMainText = styled.h1`

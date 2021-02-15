@@ -71,3 +71,11 @@ body {
   align-items: flex-start;
   flex-direction: column;
 }
+
+.active{
+  color: #0e78f9
+}
+
+.react-tooltip-lite, .react-tooltip-lite-arrow {
+  z-index: 124124124124 !important;
+}
