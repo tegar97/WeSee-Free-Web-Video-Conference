@@ -61,13 +61,19 @@ function Hero({ history }) {
         <div>
             <HeroContainer id="about">
                 <HeroHeader>
-                    <Reveal>
-                        <Tween from={{ x: '200px' }} stagger={0.3} ease="elastic.out(0.1, 0.1)">
-                            <SplitWords wrapper={<HeroHeaderMainText style={{ display: 'inline-block' }} />}>
-                                STAY CONNECTED TO EVERYONE
-                            </SplitWords>
+                    {isTabletOrMobile ? (
+                        <Tween from={{ opacity: 0 }} to={{ opacity: 1 }} duration={2}>
+                            <HeroHeaderMainText>STAY CONNECTED TO EVERYONE</HeroHeaderMainText>
                         </Tween>
-                    </Reveal>
+                    ) : (
+                        <Reveal>
+                            <Tween from={{ x: '200px' }} stagger={0.3} ease="elastic.out(0.1, 0.1)">
+                                <SplitWords wrapper={<HeroHeaderMainText style={{ display: 'inline-block' }} />}>
+                                    STAY CONNECTED TO EVERYONE
+                                </SplitWords>
+                            </Tween>
+                        </Reveal>
+                    )}
 
                     <Tween from={{ x: '-100px' }} to={{ x: '0' }} duration={2}>
                         <HeroHeaderPrimaryText>

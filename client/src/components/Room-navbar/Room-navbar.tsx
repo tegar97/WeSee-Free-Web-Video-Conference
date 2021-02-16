@@ -3,14 +3,32 @@ import { useAudio } from '../../context/Audio';
 import SettingApp from '../settings/settings';
 import { RoomNavbarContainer, RoomNavbarItems } from './Room-navbar.styles';
 import { useMediaQuery } from 'react-responsive';
+import RoomNavbarMobile from '../../room-navbar-mobile/room-navbar-mobile';
 
 function RoomNavbar({ stream, peers, handle, userVideo, history, RoomCode }: any) {
     const [videoMuted, setVideoMuted] = useState(false);
     const [isFullscreen, setIsFullScreen] = useState(false);
     const [RoomInfo, SetRoomInfo] = useState(false);
     const { audioMuted, setAudioMuted }: any = useAudio();
+    // const [intervalGoinOn, setIntervalGoinOn] = useState(false);
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
     console.log(history);
+
+    // useEffect(() => {
+    //     const navbar = document.getElementById('navbar');
+
+    //     navbar.onmouseover = function () {
+    //         navbar.style.opacity = '1';
+    //     };
+    //     navbar.onmouseout = function () {
+    //         if (intervalGoinOn) return;
+    //         setIntervalGoinOn(true);
+    //         setTimeout(function () {
+    //             navbar.style.opacity = '0';
+    //             setIntervalGoinOn(false);
+    //         }, 10000);
+    //     };
+    // }, [intervalGoinOn]);
 
     function toggleMuteVideo() {
         if (stream) {
@@ -76,36 +94,17 @@ function RoomNavbar({ stream, peers, handle, userVideo, history, RoomCode }: any
     return (
         <>
             {isTabletOrMobile ? (
-                <div
-                    className="absolute bottom-0 flex flex-row justify-between w-full p-5"
-                    style={{ backgroundColor: '#1C1F2E' }}
-                >
-                    <RoomNavbarItems onClick={muteAudio}>
-                        {audioMuted ? (
-                            <i data-tip="Turn on mic" className="text-xl text-red-500 fas fa-microphone"></i>
-                        ) : (
-                            <i data-tip="Turn off mic" className="text-xl text-white fas fa-microphone"></i>
-                        )}
-                    </RoomNavbarItems>
-                    <div className="flex items-center justify-center" style={{ gridColumn: '3/5', width: '100%' }}>
-                        <button
-                            style={{ borderRadius: '5px' }}
-                            className="px-2 py-3 font-bold text-white transition duration-300 ease-in-out bg-red-600 w-100 hover:bg-red-500 "
-                            onClick={() => leaveMeeting()}
-                        >
-                            Leave Meeting
-                        </button>
-                    </div>
-                    <RoomNavbarItems onClick={toggleMuteVideo}>
-                        {videoMuted ? (
-                            <i data-tip="Turn on camera" className="text-xl text-red-500 fas fa-video"></i>
-                        ) : (
-                            <i data-tip="Turn off camera" className="text-xl text-white fas fa-video"></i>
-                        )}
-                    </RoomNavbarItems>
+                <div className="absolute bottom-0 flex flex-row justify-center w-full p-5">
+                    <RoomNavbarMobile
+                        leaveMeeting={leaveMeeting}
+                        toggleMuteVideo={toggleMuteVideo}
+                        muteAudio={muteAudio}
+                        audioMuted={audioMuted}
+                        videoMuted={videoMuted}
+                    />
                 </div>
             ) : (
-                <RoomNavbarContainer>
+                <RoomNavbarContainer id="navbar">
                     <div className="relative self-center">
                         <button className="text-lg text-white outline-none" onClick={() => SetRoomInfo(!RoomInfo)}>
                             Room Info

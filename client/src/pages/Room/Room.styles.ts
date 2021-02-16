@@ -5,7 +5,7 @@ export const RoomContainer = styled.div`
     background-color  : #191B28;
     display: flex;
     height: 100vh;
-   
+    
     width: 100%;    
 
 

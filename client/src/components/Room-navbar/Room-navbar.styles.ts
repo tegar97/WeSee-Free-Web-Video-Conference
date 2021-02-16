@@ -10,6 +10,7 @@ export const RoomNavbarContainer = styled.div`
     padding: 1rem 8rem;
     background-color: #1C1F2E;
     z-index: 1000;
+    transition: .8s all;
 
 
 `

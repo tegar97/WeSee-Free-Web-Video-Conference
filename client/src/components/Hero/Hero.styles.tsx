@@ -13,6 +13,9 @@ export const HeroHeaderMainText = styled.h1`
     color: #0e78f9;
     font-weight: 800;
     font-size: 2.5rem;
+    @media only screen and (max-width: 768px) {
+        font-size: 2.1rem;
+    }
 `;
 
 export const HeroHeaderPrimaryText = styled.p`
@@ -21,6 +24,9 @@ export const HeroHeaderPrimaryText = styled.p`
     word-wrap: break-word;
     line-height: 1.8;
     opacity: 60%;
+    @media only screen and (max-width: 768px) {
+        font-size: 1.3rem;
+    }
 `;
 
 export const HeroButton = styled.button`

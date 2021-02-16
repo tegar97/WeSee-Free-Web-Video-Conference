@@ -87,7 +87,7 @@ const Login: React.FC = ({ history }: any) => {
                     </button>
                 </div>
                 {error && <span className="mt-5 text-red-300">{error}</span>}
-                <div className="w-full">
+                <div className="w-full h-full" style={{ height: '101vh' }}>
                     <form onSubmit={handleSubmit}>
                         <div className="w-full mt-10">
                             <label className="text-white " htmlFor="email">

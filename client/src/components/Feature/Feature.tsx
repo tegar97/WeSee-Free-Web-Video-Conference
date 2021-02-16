@@ -17,8 +17,11 @@ import {
 } from '../Section-Features/SectionFeatures.styles';
 import ScrollAnimation from 'react-animate-on-scroll';
 import { Reveal, Tween } from 'react-gsap';
+import { useMediaQuery } from 'react-responsive';
 
 function Feature() {
+    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1200px)' });
+
     return (
         <>
             <MarginContainer>
@@ -99,13 +102,15 @@ function Feature() {
                 </FeatureItemContainer>
 
                 <FeatureImage>
-                    <Tween from={{ width: 0 }} to={{ width: '100%' }} duration={3}>
-                        <RoomPhoto
-                            src="/ui.png"
-                            alt="ui room"
-                            style={{ filter: 'drop-shadow(0px 5px 20px #0E78F9)', justifySelf: 'center' }}
-                        />
-                    </Tween>
+                    {!isTabletOrMobile && (
+                        <Tween from={{ width: 0 }} to={{ width: '100%' }} duration={3}>
+                            <RoomPhoto
+                                src="/ui.png"
+                                alt="ui room"
+                                style={{ filter: 'drop-shadow(0px 5px 20px #0E78F9)', justifySelf: 'center' }}
+                            />
+                        </Tween>
+                    )}
                 </FeatureImage>
                 <FeatureItemContainer>
                     <FeatureItem>
