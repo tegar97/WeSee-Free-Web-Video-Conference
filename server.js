@@ -46,11 +46,10 @@ io.on('connection',(socket) =>{
         const usersInThisRoom = usersId[room].filter(id => id !== socket.id);
         const users = getUsersinRoom(user.room).filter(user => user.id !== socket.id)
 
-        console.log('hey',users)
-        console.log('users in room',users)
+        console.log('users in room',usersInThisRoom)
    
         
-        socket.emit("all users", {userId : usersInThisRoom, usersData : users});
+        socket.emit("all users", usersInThisRoom);
 
 
         socket.emit('message',{user: 'system',text: `${user.name},welcome to the room`})

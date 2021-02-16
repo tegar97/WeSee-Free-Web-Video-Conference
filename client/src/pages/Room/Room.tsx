@@ -87,13 +87,10 @@ const Room: React.FC = ({ history, match, location }: any) => {
                     alert(error);
                 }
             });
-            socket.on('all users', (userData) => {
+            socket.on('all users', (usersInThisRoom) => {
                 const peers = [];
-                console.log('124124', userData);
-                // users.map((user) => {
-                //     console.log('hoy', user.id);
-                // });
-                userData['userId'].forEach((userID) => {
+
+                usersInThisRoom.forEach((userID) => {
                     const peer = createPeer(userID, socket.id, stream);
                     peersRef.current.push({
                         peerID: userID,
@@ -196,14 +193,13 @@ const Room: React.FC = ({ history, match, location }: any) => {
                     {isTabletOrMobile ? (
                         <div style={{ width: '4rem' }}>
                             <ToastContainer
-                                position="bottom-left"
+                                position="top-right"
                                 autoClose={1500}
                                 hideProgressBar={false}
                                 newestOnTop={false}
                                 closeOnClick
                                 rtl={false}
                                 draggable={false}
-                                pauseOnHover
                             />
                         </div>
                     ) : (
