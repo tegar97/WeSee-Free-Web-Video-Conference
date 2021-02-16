@@ -22,7 +22,6 @@ const socketToRoom = {};
 io.on('connection',(socket) =>{
     socket.on('join',({name,room},callback) => {
         const {error,user} = addUser({id : socket.id,name,room})
-
         if(error) return callback(error)
         
         // ADD ID FOR PEER
@@ -43,19 +42,22 @@ io.on('connection',(socket) =>{
         console.log(usersId[room])
 
         socketToRoom[socket.id] = room;
+    
         const usersInThisRoom = usersId[room].filter(id => id !== socket.id);
-         
-        console.log('users in room',usersInThisRoom)
+        const users = getUsersinRoom(user.room).filter(user => user.id !== socket.id)
+
+        console.log('hey',users)
+        console.log('users in room',users)
    
         
-        socket.emit("all users", usersInThisRoom);
+        socket.emit("all users", {userId : usersInThisRoom, usersData : users});
 
 
         socket.emit('message',{user: 'system',text: `${user.name},welcome to the room`})
         socket.broadcast.to(user.room).emit('message',{user : 'system',text : `${user.name},has joined!`})
         socket.join(user.room);
         io.to(user.room).emit('roomData',{room: user.room,users: getUsersinRoom(user.room)})
-        console.log( getUsersinRoom(user.room))
+      
 
 
 

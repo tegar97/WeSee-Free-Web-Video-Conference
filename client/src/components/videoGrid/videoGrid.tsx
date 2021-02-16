@@ -11,27 +11,29 @@ import { useMediaQuery } from 'react-responsive';
 
 const Video = (props) => {
     const ref = useRef(null);
-    console.log('peersasfasfasfsf', props);
+    console.log('peersasfasfasfsf');
 
     useEffect(() => {
         console.log(props.peer);
-        props.peer.on('stream', (stream) => {
-            ref.current.srcObject = stream;
-            console.log('stream', stream);
-            var options = {};
+        if (props.peer) {
+            props.peer.on('stream', (stream) => {
+                ref.current.srcObject = stream;
+                console.log('stream', stream);
+                var options = {};
 
-            const speechEvents = hark(stream, options);
-            speechEvents.on('speaking', function () {
-                console.log('speaking');
-                ref.current.style.border = '8px solid #19ff57';
-            });
-            speechEvents.on('stopped_speaking', function () {
-                console.log('stopped_speaking');
-                ref.current.style.border = '';
-            });
+                const speechEvents = hark(stream, options);
+                speechEvents.on('speaking', function () {
+                    console.log('speaking');
+                    ref.current.style.border = '8px solid #19ff57';
+                });
+                speechEvents.on('stopped_speaking', function () {
+                    console.log('stopped_speaking');
+                    ref.current.style.border = '';
+                });
 
-            console.log(stream.getAudioTracks()[0].enabled);
-        });
+                console.log(stream.getAudioTracks()[0].enabled);
+            });
+        }
     }, [props.peer]);
 
     return (
@@ -51,15 +53,15 @@ const Video = (props) => {
 const SelfVideo = () => {
     return <h1>tes</h1>;
 };
-const VideoGrid = ({ userVideo, peers, users, handleShareScreen }) => {
+const VideoGrid = ({ userVideo, peers, users, handleShareScreen, peersRef }) => {
     const {}: any = useAuth();
     const [pin, setPin] = useState(false);
     const videoUsersPin = useRef();
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
 
-    console.log(pin);
-    console.log(peers);
     useEffect(() => {
+        if (peers) {
+        }
         function recalculateLayout() {
             const gallery = document.getElementById('gallery');
             const aspectRatio = 16 / 9;
@@ -184,7 +186,13 @@ const VideoGrid = ({ userVideo, peers, users, handleShareScreen }) => {
                         <>
                             <div className="video-container" ref={videoUsersPin} id="videoGroup">
                                 {peer ? (
-                                    <Video pinVideo={pinVideo} setPin={setPin} key={index} peer={peer} />
+                                    <Video
+                                        pinVideo={pinVideo}
+                                        setPin={setPin}
+                                        key={index}
+                                        peer={peer}
+                                        peersRef={peersRef}
+                                    />
                                 ) : (
                                     'Loading ...'
                                 )}

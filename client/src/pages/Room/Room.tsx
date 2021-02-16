@@ -19,6 +19,7 @@ import { Howl } from 'howler';
 import ringtone from './../../sounds/enterRoom.mp3';
 import hark from 'hark';
 import firebase from '../../firebase';
+import { useMediaQuery } from 'react-responsive';
 
 const ringtoneSound = new Howl({
     src: [ringtone],
@@ -28,6 +29,7 @@ const ringtoneSound = new Howl({
 const Room: React.FC = ({ history, match, location }: any) => {
     const { messages, setMessages } = useMessage();
     const { users, pin } = useAuth();
+    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
 
     const [stream, setStream] = useState({});
     const userVideo = useRef(null);
@@ -85,18 +87,20 @@ const Room: React.FC = ({ history, match, location }: any) => {
                     alert(error);
                 }
             });
-            socket.on('all users', (users) => {
+            socket.on('all users', (userData) => {
                 const peers = [];
-
-                users.forEach((userID) => {
-                    console.log('users', userID.id);
+                console.log('124124', userData);
+                // users.map((user) => {
+                //     console.log('hoy', user.id);
+                // });
+                userData['userId'].forEach((userID) => {
                     const peer = createPeer(userID, socket.id, stream);
                     peersRef.current.push({
                         peerID: userID,
                         peer,
                     });
+
                     peers.push(peer);
-                    console.log('peer on join', peers);
                 });
                 setPeers(peers);
             });
@@ -122,11 +126,9 @@ const Room: React.FC = ({ history, match, location }: any) => {
                     peerObj.peer.destroy();
                 }
 
-                const peers = peersRef.current.filter((p) => p.peerID !== id);
-                console.log('afasf', peers);
-                peersRef.current = peers;
+                const peer = peers.filter((p) => p.peerID !== id);
+                peersRef.current = peer;
 
-                console.log('peer left', peers);
                 setPeers(peers);
             });
         });
@@ -191,39 +193,56 @@ const Room: React.FC = ({ history, match, location }: any) => {
         <>
             {isValid ? (
                 <FullScreen handle={handle}>
-                    <ToastContainer
-                        position="top-right"
-                        autoClose={3000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable={false}
-                        pauseOnHover
-                    />
+                    {isTabletOrMobile ? (
+                        <div style={{ width: '4rem' }}>
+                            <ToastContainer
+                                position="bottom-left"
+                                autoClose={1500}
+                                hideProgressBar={false}
+                                newestOnTop={false}
+                                closeOnClick
+                                rtl={false}
+                                draggable={false}
+                                pauseOnHover
+                            />
+                        </div>
+                    ) : (
+                        <ToastContainer
+                            position="top-right"
+                            autoClose={3000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable={false}
+                            pauseOnHover
+                        />
+                    )}
 
                     <RoomContainer id="roomContainer">
-                        <RoomChatAndUsers>
-                            <RoomChatAndUsersItems onClick={() => setUserMenu(!menuUser)}>
-                                <i className="text-2xl text-white fas fa-users"></i>
-                                <ItemExtends>
-                                    <span style={{ fontSize: '.7rem' }}>{users.length}</span>
-                                </ItemExtends>
-                            </RoomChatAndUsersItems>
+                        {!isTabletOrMobile && (
+                            <RoomChatAndUsers>
+                                <RoomChatAndUsersItems onClick={() => setUserMenu(!menuUser)}>
+                                    <i className="text-2xl text-white fas fa-users"></i>
+                                    <ItemExtends>
+                                        <span style={{ fontSize: '.7rem' }}>{users.length}</span>
+                                    </ItemExtends>
+                                </RoomChatAndUsersItems>
 
-                            <RoomChatAndUsersItems
-                                onClick={() => setRoomMenu(!roomMenu)}
-                                style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}
-                            >
-                                <i className="text-2xl text-white fas fa-comment-dots"></i>
-                                <ItemExtends>
-                                    <span style={{ fontSize: '.7rem' }}>
-                                        {messages.filter((m) => m.user !== 'system').length}
-                                    </span>
-                                </ItemExtends>
-                            </RoomChatAndUsersItems>
-                        </RoomChatAndUsers>
+                                <RoomChatAndUsersItems
+                                    onClick={() => setRoomMenu(!roomMenu)}
+                                    style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}
+                                >
+                                    <i className="text-2xl text-white fas fa-comment-dots"></i>
+                                    <ItemExtends>
+                                        <span style={{ fontSize: '.7rem' }}>
+                                            {messages.filter((m) => m.user !== 'system').length}
+                                        </span>
+                                    </ItemExtends>
+                                </RoomChatAndUsersItems>
+                            </RoomChatAndUsers>
+                        )}
 
                         <AudioProvider>
                             <RoomVideo
@@ -238,6 +257,7 @@ const Room: React.FC = ({ history, match, location }: any) => {
                                 screenShareRef={screenShareRef}
                                 usersData={users}
                                 handleShareScreen={handleShareScreen}
+                                peersRef={peersRef}
                             />
                             <RoomNavbar
                                 isScreenShare={isScreenShare}

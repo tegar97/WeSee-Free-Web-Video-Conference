@@ -4,6 +4,8 @@ import ChatBox from '../chat-box/chat-box';
 import { socket } from '../constant/socket';
 import { ChatBarContainer, ChatInput, ChatMessage } from './ChatBar.styles';
 import './scroll.scss';
+import ScrollToBottom from 'react-scroll-to-bottom';
+
 const ChatBar = () => {
     const messageRef = useRef(null);
     const { messages }: any = useMessage();
@@ -19,9 +21,11 @@ const ChatBar = () => {
         <ChatBarContainer>
             <div style={{ display: 'flex', height: '100%' }}>
                 <ChatMessage>
-                    {messages.map((message, i) => (
-                        <ChatBox message={message} key={i} />
-                    ))}
+                    <ScrollToBottom className="flex-auto h-full overflow-auto">
+                        {messages.map((message, i) => (
+                            <ChatBox message={message} key={i} />
+                        ))}
+                    </ScrollToBottom>
                 </ChatMessage>
                 <form style={{ position: 'absolute', bottom: '0', width: '100%' }}>
                     <ChatInput ref={messageRef} placeholder="Type your message" />

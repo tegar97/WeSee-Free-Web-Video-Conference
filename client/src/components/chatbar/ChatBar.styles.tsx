@@ -20,7 +20,7 @@ export const ChatInput = styled.input`
 
 export const ChatMessage = styled.div`
     width: 100%;
-    height: 70%;
+    height: 100%;
     overflow: auto;
     &:-webkit-scrollbar {
         width: 10px;
