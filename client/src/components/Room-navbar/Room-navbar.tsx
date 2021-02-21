@@ -4,15 +4,19 @@ import SettingApp from '../settings/settings';
 import { RoomNavbarContainer, RoomNavbarItems } from './Room-navbar.styles';
 import { useMediaQuery } from 'react-responsive';
 import RoomNavbarMobile from '../../room-navbar-mobile/room-navbar-mobile';
-
-function RoomNavbar({ stream, peers, handle, userVideo, history, RoomCode }: any) {
+import { useShareScreen } from '../../context/ShareScreenContext';
+import { socket } from '../constant/socket';
+import WhiteBoard from './../Whiteboard/WhiteBoard';
+function RoomNavbar({ stream, peers, handle, userVideo, RoomCode }: any) {
     const [videoMuted, setVideoMuted] = useState(false);
     const [isFullscreen, setIsFullScreen] = useState(false);
     const [RoomInfo, SetRoomInfo] = useState(false);
+    const [RoomNavMenu, SetRoomNavMenu] = useState(false);
     const { audioMuted, setAudioMuted }: any = useAudio();
     // const [intervalGoinOn, setIntervalGoinOn] = useState(false);
+    const { isShareScreen }: any = useShareScreen();
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
-    console.log(history);
+    console.log(isShareScreen);
 
     // useEffect(() => {
     //     const navbar = document.getElementById('navbar');
@@ -76,6 +80,9 @@ function RoomNavbar({ stream, peers, handle, userVideo, history, RoomCode }: any
                 );
                 userVideo.current.srcObject = screenStream;
             }
+
+            socket.emit('shareScreen', true);
+
             screenStream.getTracks()[0].onended = () => {
                 if (!peers.current[0]) {
                     userVideo.current.srcObject = stream;
@@ -88,9 +95,11 @@ function RoomNavbar({ stream, peers, handle, userVideo, history, RoomCode }: any
 
                     userVideo.current.srcObject = stream;
                 }
+                socket.emit('shareScreen', false);
             };
         });
     }
+
     return (
         <>
             {isTabletOrMobile ? (
@@ -170,15 +179,60 @@ function RoomNavbar({ stream, peers, handle, userVideo, history, RoomCode }: any
                                 ></i>
                             )}
                         </RoomNavbarItems>
-                        <RoomNavbarItems onClick={shareScreen}>
-                            <i className="text-xl text-white fas fa-desktop"></i>
-                        </RoomNavbarItems>
+                        {isShareScreen ? (
+                            <RoomNavbarItems>
+                                <i className="text-xl text-red-500 fas fa-desktop"></i>
+                            </RoomNavbarItems>
+                        ) : (
+                            <RoomNavbarItems onClick={shareScreen}>
+                                <i className="text-xl text-white fas fa-desktop"></i>
+                            </RoomNavbarItems>
+                        )}
                     </div>
-                    <SettingApp stream={stream} peers={peers} userVideo={userVideo}>
-                        <div className="flex flex-col items-center cursor-pointer">
-                            <i data-tip="settings" className="p-1 text-xl text-white fas fa-cog"></i>
+
+                    <RoomNavbarItems className="relative self-center">
+                        <button
+                            className="w-full text-lg text-white outline-none"
+                            onClick={() => SetRoomNavMenu(!RoomNavMenu)}
+                        >
+                            <i data-tip="Menu" className="p-1 text-xl text-white fas fa-ellipsis-v"></i>
+                        </button>
+                        <div
+                            className="absolute "
+                            style={{
+                                backgroundColor: '#191b28',
+                                minWidth: '200px',
+                                transition: '.8s all',
+                                right: 0,
+                                bottom: RoomNavMenu ? '70px' : '-200px',
+                                display: RoomNavMenu ? 'flex' : 'none',
+                                color: '#fff',
+                                border: '5px',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            <div>
+                                <ul className="flex flex-col justify-center">
+                                    <WhiteBoard RoomCode={RoomCode}>
+                                        <li className="w-full p-4 mb-3 hover:bg-blue-600">
+                                            <div className="flex flex-row items-center cursor-pointer">
+                                                <i data-tip="settings" className="text-white text-md fas fa-cog"></i>
+                                                <span className="ml-3 text-md"> WhiteBoard [BETA]</span>
+                                            </div>
+                                        </li>
+                                    </WhiteBoard>
+                                    <SettingApp stream={stream} peers={peers} userVideo={userVideo}>
+                                        <li className="w-full p-4 hover:bg-blue-600">
+                                            <div className="flex flex-row items-center cursor-pointer">
+                                                <i data-tip="settings" className="text-white text-md fas fa-cog"></i>
+                                                <span className="ml-3 text-md"> Settings</span>
+                                            </div>
+                                        </li>
+                                    </SettingApp>
+                                </ul>
+                            </div>
                         </div>
-                    </SettingApp>
+                    </RoomNavbarItems>
                 </RoomNavbarContainer>
             )}
         </>

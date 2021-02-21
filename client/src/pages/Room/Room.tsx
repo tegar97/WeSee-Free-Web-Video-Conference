@@ -20,6 +20,8 @@ import ringtone from './../../sounds/enterRoom.mp3';
 import hark from 'hark';
 import firebase from '../../firebase';
 import { useMediaQuery } from 'react-responsive';
+import { ShareScreenProvider } from '../../context/ShareScreenContext';
+import RoomMenuMobile from '../../components/room-menu-android/room-menu-android';
 
 const ringtoneSound = new Howl({
     src: [ringtone],
@@ -43,6 +45,7 @@ const Room: React.FC = ({ history, match, location }: any) => {
     const screenShareRef = useRef(null);
     const [menuUser, setUserMenu] = useState(false);
     const [isValid, setIsValid] = useState(true);
+    const [whiteBoard, setWhiteBoard] = useState();
     let [systemMessage, setSystemMessage] = useState({});
     const [RoomCode, setRoomCode] = useState();
     const { currentUser } = useAuth();
@@ -74,62 +77,70 @@ const Room: React.FC = ({ history, match, location }: any) => {
     }, []);
 
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            setStream(stream);
+        navigator.mediaDevices
+            .getUserMedia({
+                video: true,
+                audio: true,
+                frameRate: {
+                    max: 60,
+                    min: 33,
+                },
+            })
+            .then((stream) => {
+                setStream(stream);
 
-            screenShareRef.current = stream;
-            userVideo.current.srcObject = stream;
+                userVideo.current.srcObject = stream;
 
-            socket.emit('join', { name, room }, (error) => {
-                ringtoneSound.play();
+                socket.emit('join', { name, room }, (error) => {
+                    ringtoneSound.play();
 
-                if (error) {
-                    alert(error);
-                }
-            });
-            socket.on('all users', (usersInThisRoom) => {
-                const peers = [];
+                    if (error) {
+                        alert(error);
+                    }
+                });
+                socket.on('all users', (usersInThisRoom) => {
+                    const peers = [];
 
-                usersInThisRoom.forEach((userID) => {
-                    const peer = createPeer(userID, socket.id, stream);
+                    usersInThisRoom.forEach((userID) => {
+                        const peer = createPeer(userID, socket.id, stream);
+                        peersRef.current.push({
+                            peerID: userID,
+                            peer,
+                        });
+
+                        peers.push(peer);
+                    });
+                    setPeers(peers);
+                });
+
+                socket.on('user joined', (payload) => {
+                    const peer = addPeer(payload.signal, payload.callerID, stream);
                     peersRef.current.push({
-                        peerID: userID,
+                        peerID: payload.callerID,
                         peer,
                     });
 
-                    peers.push(peer);
-                });
-                setPeers(peers);
-            });
-
-            socket.on('user joined', (payload) => {
-                const peer = addPeer(payload.signal, payload.callerID, stream);
-                peersRef.current.push({
-                    peerID: payload.callerID,
-                    peer,
+                    setPeers((users) => [...users, peer]);
                 });
 
-                setPeers((users) => [...users, peer]);
+                socket.on('receiving returned signal', (payload) => {
+                    const item = peersRef.current.find((p) => p.peerID === payload.id);
+                    item.peer.signal(payload.signal);
+                });
+
+                socket.on('user left', (id) => {
+                    const peerObj = peersRef.current.find((p) => p.peerID === id);
+                    if (peerObj) {
+                        peerObj.peer.destroy();
+                    }
+
+                    const peer = peers.filter((p) => p.peerID !== id);
+                    peersRef.current = peer;
+
+                    setPeers(peers);
+                });
             });
-
-            socket.on('receiving returned signal', (payload) => {
-                const item = peersRef.current.find((p) => p.peerID === payload.id);
-                item.peer.signal(payload.signal);
-            });
-
-            socket.on('user left', (id) => {
-                const peerObj = peersRef.current.find((p) => p.peerID === id);
-                if (peerObj) {
-                    peerObj.peer.destroy();
-                }
-
-                const peer = peers.filter((p) => p.peerID !== id);
-                peersRef.current = peer;
-
-                setPeers(peers);
-            });
-        });
-    }, [ENDPOINT]);
+    }, []);
 
     useEffect(() => {
         socket.on('message', (message) => {
@@ -137,6 +148,15 @@ const Room: React.FC = ({ history, match, location }: any) => {
             if (message.user === 'system') {
                 toast.info(message.text);
             }
+        });
+        socket.on('ShareWhiteboard', (message) => {
+            toast.info(
+                `${
+                    message.user === currentUser.displayName.toLowerCase()
+                        ? 'You  Share whiteboard to all participants '
+                        : `${message.user} Share whiteboard with you , check message to join`
+                }`,
+            );
         });
     }, []);
 
@@ -226,47 +246,50 @@ const Room: React.FC = ({ history, match, location }: any) => {
                                     </ItemExtends>
                                 </RoomChatAndUsersItems>
 
-                                <RoomChatAndUsersItems
-                                    onClick={() => setRoomMenu(!roomMenu)}
-                                    style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}
-                                >
-                                    <i className="text-2xl text-white fas fa-comment-dots"></i>
-                                    <ItemExtends>
-                                        <span style={{ fontSize: '.7rem' }}>
-                                            {messages.filter((m) => m.user !== 'system').length}
-                                        </span>
-                                    </ItemExtends>
+                                <RoomChatAndUsersItems style={{ borderLeft: '1px solid rgba(255,255,255,.2)' }}>
+                                    <RoomMenuMobile isDekstop={true}>
+                                        <i className="text-2xl text-white fas fa-comment-dots"></i>
+                                        <ItemExtends>
+                                            <span style={{ fontSize: '.7rem' }}>
+                                                {messages.filter((m) => m.user !== 'system').length}
+                                            </span>
+                                        </ItemExtends>
+                                    </RoomMenuMobile>
                                 </RoomChatAndUsersItems>
                             </RoomChatAndUsers>
                         )}
 
                         <AudioProvider>
-                            <RoomVideo
-                                userVideo={userVideo}
-                                peers={peers}
-                                stream={stream}
-                                roomMenu={roomMenu}
-                                setRoomMenu={setRoomMenu}
-                                setUserMenu={setUserMenu}
-                                menuUser={menuUser}
-                                isScreenShare={isScreenShare}
-                                screenShareRef={screenShareRef}
-                                usersData={users}
-                                handleShareScreen={handleShareScreen}
-                                peersRef={peersRef}
-                            />
-                            <RoomNavbar
-                                isScreenShare={isScreenShare}
-                                setIsScreenShare={setIsScreenShare}
-                                stream={stream}
-                                peers={peersRef}
-                                userVideo={userVideo}
-                                handle={handle}
-                                history={history}
-                                screenShareRef={screenShareRef}
-                                RoomCode={RoomCode}
-                                handleShareScreen={handleShareScreen}
-                            />
+                            <ShareScreenProvider>
+                                <RoomVideo
+                                    userVideo={userVideo}
+                                    peers={peers}
+                                    stream={stream}
+                                    roomMenu={roomMenu}
+                                    setRoomMenu={setRoomMenu}
+                                    setUserMenu={setUserMenu}
+                                    menuUser={menuUser}
+                                    isScreenShare={isScreenShare}
+                                    screenShareRef={screenShareRef}
+                                    usersData={users}
+                                    handleShareScreen={handleShareScreen}
+                                    peersRef={peersRef}
+                                />
+                                <RoomNavbar
+                                    isScreenShare={isScreenShare}
+                                    setIsScreenShare={setIsScreenShare}
+                                    stream={stream}
+                                    setPeers={setPeers}
+                                    peers={peersRef}
+                                    userVideo={userVideo}
+                                    handle={handle}
+                                    history={history}
+                                    screenShareRef={screenShareRef}
+                                    RoomCode={RoomCode}
+                                    handleShareScreen={handleShareScreen}
+                                    match={match}
+                                />
+                            </ShareScreenProvider>
                         </AudioProvider>
                     </RoomContainer>
                 </FullScreen>

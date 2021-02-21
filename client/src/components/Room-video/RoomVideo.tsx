@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useEffect } from 'react';
+import Draggable from 'react-draggable';
 import { useAuth } from '../../context/AuthContext';
 import ChatBar from '../chatbar/ChatBar';
 import { socket } from '../constant/socket';
@@ -47,11 +48,11 @@ const RoomVideo = ({
             )}
 
             <VideoGrid
-                peersRef={peersRef}
                 users={users}
                 userVideo={userVideo}
                 peers={peers}
                 handleShareScreen={handleShareScreen}
+                stream={stream}
             />
         </RoomVideoContainer>
     );

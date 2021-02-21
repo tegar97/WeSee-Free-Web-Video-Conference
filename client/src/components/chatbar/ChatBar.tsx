@@ -20,13 +20,13 @@ const ChatBar = () => {
     return (
         <ChatBarContainer>
             <div style={{ display: 'flex', height: '100%' }}>
-                <ChatMessage>
-                    <ScrollToBottom className="flex-auto h-full overflow-auto">
+                <ScrollToBottom className="flex-auto h-full overflow-auto">
+                    <ChatMessage>
                         {messages.map((message, i) => (
                             <ChatBox message={message} key={i} />
                         ))}
-                    </ScrollToBottom>
-                </ChatMessage>
+                    </ChatMessage>
+                </ScrollToBottom>
                 <form style={{ position: 'absolute', bottom: '0', width: '100%' }}>
                     <ChatInput ref={messageRef} placeholder="Type your message" />
                     <button

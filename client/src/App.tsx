@@ -4,6 +4,7 @@ import ReactTooltip from 'react-tooltip';
 import { AuthProvider } from './context/AuthContext';
 import { MessageProvider } from './context/chatMessage';
 import LandingPage from './pages/Landing-Page/LandingPage';
+import Prepare from './pages/preparePages/prepare';
 
 import PrivateRoute from './private-route/PrivateRoute';
 
@@ -23,14 +24,15 @@ const App: React.FC = () => {
                         fallback={
                             <div
                                 className="flex items-center justify-center text-white"
-                                style={{ backgroundColor: '#fff' }}
+                                style={{ backgroundColor: '#000', height: '100vh', width: '100%' }}
                             >
-                                <h1>LOADING .......</h1>
+                                <h1 className="text-2xl font-bold">LOADING .......</h1>
                             </div>
                         }
                     >
                         <Route exact path="/signin" component={Signin} />
                         <Route exact path="/signup" component={SignUp} />
+                        <Route exact path="/prepare/:roomid" component={Prepare} />
                         <MessageProvider>
                             <PrivateRoute exact path="/room/:id" component={Room} />
                         </MessageProvider>

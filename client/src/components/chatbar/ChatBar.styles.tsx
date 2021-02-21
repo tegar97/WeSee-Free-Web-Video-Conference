@@ -4,6 +4,7 @@ export const ChatBarContainer = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: auto;
 `;
 
 export const ChatInput = styled.input`
@@ -22,6 +23,7 @@ export const ChatMessage = styled.div`
     width: 100%;
     height: 100%;
     overflow: auto;
+    position: absolute;
     &:-webkit-scrollbar {
         width: 10px;
     }

@@ -4108,6 +4108,11 @@ caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.300011
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001181.tgz#4f0e5184e1ea7c3bf2727e735cbe7ca9a451d673"
   integrity sha512-m5ul/ARCX50JB8BSNM+oiPmQrR5UmngaQ3QThTTp5HcIIQGP/nPBs82BYLE+tigzm3VW+F4BJIhUyaVtEweelQ==
 
+canvas-free-drawing@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/canvas-free-drawing/-/canvas-free-drawing-2.1.0.tgz#5c64666219ce6e5cc740a556bbbfff8b028a0ac0"
+  integrity sha512-/cHMwuwsWYdFYckYVSBU662cY7tQuEMcZaoX+GZBLVsRphEZFRQFjZpmLtkVPHCv4db+2Pr9vetvEEFkGeOVzA==
+
 capture-exit@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/capture-exit/-/capture-exit-2.0.0.tgz#fb953bfaebeb781f62898239dabb426d08a509a4"

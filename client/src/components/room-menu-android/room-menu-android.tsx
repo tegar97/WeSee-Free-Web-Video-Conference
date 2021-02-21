@@ -6,7 +6,7 @@ import { useMessage } from '../../context/chatMessage';
 import { socket } from '../constant/socket';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-const RoomMenuMobile = ({ children }) => {
+const RoomMenuMobile = ({ children, isDekstop }) => {
     const messageRef = useRef(null);
     const { messages }: any = useMessage();
 
@@ -29,16 +29,16 @@ const RoomMenuMobile = ({ children }) => {
                 style={{
                     overlay: { backgroundColor: 'rgba(25,27,40,.9)' },
                     content: {
-                        top: '50%',
+                        top: '45%',
                         left: '50%',
                         right: 'auto',
                         bottom: '100%',
                         marginRight: '-50%',
                         transform: 'translate(-50%, -50%)',
-                        width: '100%',
+                        width: isDekstop ? '40%' : '100%',
                         borderRadius: '10px',
-                        height: '100%',
-                        backgroundColor: '#202125',
+                        height: isDekstop ? '80%' : '100%',
+                        backgroundColor: isDekstop ? '#1c1f2e' : '#202125',
                         outline: 'none',
                         border: 'none',
                         padding: '0 0',
@@ -46,11 +46,11 @@ const RoomMenuMobile = ({ children }) => {
                 }}
             >
                 <div className="relative flex flex-col h-full">
-                    <div className="flex ">
-                        <div
-                            className="flex flex-row items-center p-4 "
-                            style={{ zIndex: 10021, backgroundColor: '#202125' }}
-                        >
+                    <div
+                        className="flex "
+                        style={{ zIndex: 10021, backgroundColor: isDekstop ? '#1c1f2e' : '#202125' }}
+                    >
+                        <div className="flex flex-row items-center p-4 ">
                             <button className="outline-none" onClick={() => setIsOpen(false)}>
                                 <svg
                                     style={{ fill: '#fff' }}
@@ -66,9 +66,9 @@ const RoomMenuMobile = ({ children }) => {
                             <span className="ml-5 text-xl text-white">Group Chat</span>
                         </div>
                     </div>
-                    <div className="absolute flex flex-col w-full bottom-20 " style={{ height: '100%' }}>
-                        <ScrollToBottom className="flex-auto h-full overflow-auto">
-                            <div className="p-6 text-center">
+                    <div className="absolute flex flex-col w-full " style={{ height: '90%', bottom: '80px' }}>
+                        <ScrollToBottom className="flex-auto h-full overflow-auto" style={{ height: '90%' }}>
+                            <div className="p-6 text-center ">
                                 <span className="text-center text-white" style={{ color: '#ababab' }}>
                                     This chat can only be read by people in this room and can only be seen while on a
                                     call{' '}
@@ -79,7 +79,7 @@ const RoomMenuMobile = ({ children }) => {
                                     {m.user === 'system' ? (
                                         ''
                                     ) : (
-                                        <div className="flex flex-row p-6">
+                                        <div className="flex flex-row w-full p-6">
                                             <div className="flex items-center">
                                                 <div
                                                     key={i}
@@ -99,7 +99,15 @@ const RoomMenuMobile = ({ children }) => {
                                                     >
                                                         {m.user}
                                                     </span>
-                                                    <span className="text-sm text-white">{m.text}</span>
+                                                    <span
+                                                        className="text-sm text-white "
+                                                        style={{
+                                                            wordWrap: 'break-word',
+                                                            overflow: 'hidden',
+                                                        }}
+                                                    >
+                                                        {m.text}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -116,7 +124,7 @@ const RoomMenuMobile = ({ children }) => {
                                 style={{
                                     padding: '.6rem 1.4rem',
                                     color: '#fff',
-                                    backgroundColor: '#3c4042',
+                                    backgroundColor: isDekstop ? 'rgb(33, 36, 50, 0.75)' : '#3c4042',
                                 }}
                                 rows={1}
                                 ref={messageRef}

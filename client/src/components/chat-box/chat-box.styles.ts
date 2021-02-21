@@ -4,6 +4,7 @@ export const ChatBoxContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .8rem 1rem;
+    z-index: 124124;  
 `
 
 export const MessageText = styled.div`

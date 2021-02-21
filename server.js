@@ -1,11 +1,12 @@
 const express = require('express')
 const socketIo = require('socket.io')
-
+const designer = require('canvas-designer')
 const http = require('http');
 const cors = require('cors');
 const { addUser ,removeUser,getUser,getUsersinRoom} = require('./users');
 const app = express();
 const server = http.createServer(app);
+
 require('dotenv').config()
 
 const io = socketIo(server,{
@@ -20,6 +21,11 @@ const usersId = {};
 
 const socketToRoom = {};
 io.on('connection',(socket) =>{
+    // socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
+    // socket.on('drawing', function(data) {
+    //     designer.syncData( data );
+    // });
+    
     socket.on('join',({name,room},callback) => {
         const {error,user} = addUser({id : socket.id,name,room})
         if(error) return callback(error)
@@ -44,9 +50,12 @@ io.on('connection',(socket) =>{
         socketToRoom[socket.id] = room;
     
         const usersInThisRoom = usersId[room].filter(id => id !== socket.id);
-        const users = getUsersinRoom(user.room).filter(user => user.id !== socket.id)
 
-        console.log('users in room',usersInThisRoom)
+
+       
+        // const users = getUsersinRoom(user.room).filter(user => user.id !== socket.id)
+
+        // console.log('users in room',usersInThisRoom)
    
         
         socket.emit("all users", usersInThisRoom);
@@ -70,6 +79,13 @@ io.on('connection',(socket) =>{
     
         callback();
       });
+    socket.on('isOpenWhiteboard',link => {
+        const user = getUser(socket.id);
+        console.log(link)
+
+        io.to(user.room).emit('ShareWhiteboard',{user: user.name,text: `${user.name}  share the whiteboard file link to the meeting  : ${link}`} );
+
+    })
     socket.on("sending signal", payload => {
         io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
     });
@@ -77,6 +93,14 @@ io.on('connection',(socket) =>{
     socket.on("returning signal", payload => {
         io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
     });
+
+    socket.on('shareScreen',shareScreen => {
+        const user = getUser(socket.id);
+        console.log(shareScreen)
+        const isShareScreenActive = shareScreen
+
+        io.to(user.room).emit('isShareScreenActive', isShareScreenActive );
+    })
 
     socket.on('disconnect', () => {
         const user = removeUser(socket.id)

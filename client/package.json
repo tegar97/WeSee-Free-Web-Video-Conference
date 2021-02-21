@@ -17,6 +17,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.7",
     "autoprefixer": "^9.8.6",
+    "canvas-free-drawing": "^2.1.0",
     "firebase": "^8.2.5",
     "gsap": "^3.6.0",
     "hark": "^1.2.3",

@@ -9,7 +9,7 @@ const RoomMenuContainer = styled.div`
     height: 30rem;
     background-color: #1c1f2e;
     position: absolute;
-    z-index: 100;
+    z-index: 101241240;
     @media only screen and (max-width: 768px) {
         width: 100%;
         height: 100%;
@@ -29,20 +29,18 @@ const RoomMenuNavbar = styled.div`
 `;
 const RoomMenu = ({ children, setRoomMenu, icon, title }) => {
     return (
-        <Draggable bounds="parent">
-            <RoomMenuContainer>
-                <RoomMenuNavbar>
-                    <div>
-                        <i class="far fa-comment-alt text-xl"></i>
-                        <span className="ml-3 text-xl">{title}</span>
-                    </div>
-                    <button>
-                        <i onClick={() => setRoomMenu(false)} className={`${icon} text-2xl`}></i>
-                    </button>
-                </RoomMenuNavbar>
-                {children}
-            </RoomMenuContainer>
-        </Draggable>
+        <RoomMenuContainer>
+            <RoomMenuNavbar>
+                <div>
+                    <i class="far fa-comment-alt text-xl"></i>
+                    <span className="ml-3 text-xl">{title}</span>
+                </div>
+                <button>
+                    <i onClick={() => setRoomMenu(false)} className={`${icon} text-2xl`}></i>
+                </button>
+            </RoomMenuNavbar>
+            {children}
+        </RoomMenuContainer>
     );
 };
 

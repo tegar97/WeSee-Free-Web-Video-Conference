@@ -32,7 +32,7 @@ function Navbar() {
     };
     return (
         <NavbarContainer style={{ backgroundColor: active ? '#151c2a' : '' }}>
-            <img src="./weSee.png" alt="logo" />
+            <img src="/WeSee.png" alt="logo" />
 
             {!isTabletOrMobile ? (
                 <NavbarListContainer className={`${active ? ' text-white' : ''}`} style={{ transition: '.5s all' }}>

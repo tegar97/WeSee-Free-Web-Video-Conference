@@ -8,13 +8,12 @@ import hark from 'hark';
 import { FullScreenContainer, VideoContainer, VideoMenu } from './videoGrid.styles';
 import { FullScreen } from 'react-full-screen';
 import { useMediaQuery } from 'react-responsive';
+import { useShareScreen } from '../../context/ShareScreenContext';
 
 const Video = (props) => {
     const ref = useRef(null);
-    console.log('peersasfasfasfsf');
 
     useEffect(() => {
-        console.log(props.peer);
         if (props.peer) {
             props.peer.on('stream', (stream) => {
                 ref.current.srcObject = stream;
@@ -53,12 +52,12 @@ const Video = (props) => {
 const SelfVideo = () => {
     return <h1>tes</h1>;
 };
-const VideoGrid = ({ userVideo, peers, users, handleShareScreen, peersRef }) => {
+const VideoGrid = ({ userVideo, peers, users, handleShareScreen, peersRef, stream }) => {
     const {}: any = useAuth();
     const [pin, setPin] = useState(false);
     const videoUsersPin = useRef();
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
-
+    const { isShareScreen, videoShareScreenRef } = useShareScreen();
     useEffect(() => {
         if (peers) {
         }
@@ -192,6 +191,7 @@ const VideoGrid = ({ userVideo, peers, users, handleShareScreen, peersRef }) => 
                                         key={index}
                                         peer={peer}
                                         peersRef={peersRef}
+                                        stream={stream}
                                     />
                                 ) : (
                                     'Loading ...'

@@ -7,7 +7,7 @@ function Review() {
         <ScrollAnimation animateIn="fadeIn">
             <ReviewContainer id="review">
                 <div>
-                    <img src="review1.jpg" alt="review 1" />
+                    <img src="review.jpg" alt="review 1" />
                 </div>
                 <ReviewText>
                     <ReviewLogoContainer>

@@ -14,6 +14,7 @@ import { Reveal, SplitWords, Tween } from 'react-gsap';
 import { useAuth } from '../../context/AuthContext';
 import { v4 as uuidv4 } from 'uuid';
 import firebase from '../../firebase';
+import ScrollAnimation from 'react-animate-on-scroll';
 
 function Hero({ history }) {
     const [RoomCode, setRoomCode] = useState('');
@@ -115,13 +116,11 @@ function Hero({ history }) {
                         </HeroImageContainer>
                     </Tween>
                 ) : (
-                    <HeroImageContainer>
-                        <Reveal repeat>
-                            <Tween from={{ opacity: 0 }}>
-                                <img src="/hero.png" alt="Hero Image" style={{ width: '100%', height: '900px' }} />
-                            </Tween>
-                        </Reveal>
-                    </HeroImageContainer>
+                    <ScrollAnimation animateIn="fadeIn">
+                        <HeroImageContainer>
+                            <img src="/Hero.png" alt="Hero Image 2" style={{ width: '100%', height: '900px' }} />
+                        </HeroImageContainer>
+                    </ScrollAnimation>
                 )}
             </HeroContainer>
         </div>

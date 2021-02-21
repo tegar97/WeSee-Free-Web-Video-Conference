@@ -6,7 +6,7 @@ function Footer() {
         <FooterContaiener>
             <FooterGrid>
                 <div className="flex flex-col items-center col-span-2 text-center">
-                    <img src="weSee.png" alt="logo 1" width="150" className="justify-items-center" />
+                    <img src="WeSee.png" alt="logo 1" width="150" className="justify-items-center" />
                     <p className="mt-5">
                         Wesee is is a video call service that ensures everyone can be connected with just one click
                     </p>

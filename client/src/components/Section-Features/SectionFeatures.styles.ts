@@ -248,7 +248,6 @@ const bounce = keyframes`
     }
 `;
 export const RoomPhoto = styled.img`
-    animation: ${bounce} 1.5s infinite alternate;
     cursor: pointer;
     /* transition: 1s all !important;
 

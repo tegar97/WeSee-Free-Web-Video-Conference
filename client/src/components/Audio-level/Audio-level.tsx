@@ -30,11 +30,10 @@ function Audiolevel({ stream }) {
             // browser console.
             console.log('0', stream);
             console.log('1', window.audioContext);
-            window.stream = stream;
 
             audiotest.srcObject = stream;
             console.log('trigger');
-            const soundMeter = (window.soundMeter = new SoundMeter(window.audioContext));
+            const soundMeter = (audiotest.soundMeter = new SoundMeter(window.audioContext));
             soundMeter.connectToSource(stream, function (e) {
                 if (e) {
                     alert(e);
@@ -69,8 +68,8 @@ function Audiolevel({ stream }) {
             startButton.style.display = 'inline-block';
             stopBotton.style.display = 'none';
 
-            window.stream.getTracks().forEach((track) => track.stop());
-            window.soundMeter.stop();
+            audiotest.srcObject.getTracks().forEach((track) => track.stop());
+            audiotest.soundMeter.stop();
 
             clearInterval(meterRefresh);
             instantMeter.value = instantValueDisplay.innerText = '';
